@@ -1,0 +1,23 @@
+{
+  "name": "APSON 2026 — 25th AGM & Scientific Conference",
+  "short_name": "APSON 2026",
+  "description": "25th APSON Annual General Meeting & Scientific Conference, Bauchi — programme, speakers, abstracts and announcements.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5faf6",
+  "theme_color": "#1c7a3c",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

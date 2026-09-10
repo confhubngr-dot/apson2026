@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>APSON 2026 — 25th AGM &amp; Scientific Conference | Official Event App</title>
+<meta name="description" content="Official event app for the 25th APSON Annual General Meeting and Scientific Conference — Bauchi, 23–26 September 2026. Programme, abstracts, venue and announcements.">
+<meta name="theme-color" content="#1c7a3c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="apson-logo.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --ink:#101828; --slate:#475467; --mist:#98a2b3; --line:#e4e7ec;
+    --soft:#f5faf6; --brand:#1c7a3c; --brand-2:#27994e; --brand-soft:#e9f5ec;
+    --red:#c0242b; --gold:#f4b400;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--soft);color:var(--ink);line-height:1.5;padding-bottom:108px}
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- Header ---------- */
+  .hero{background:linear-gradient(140deg,var(--brand),var(--brand-2));color:#fff;padding:22px 16px 18px;text-align:center;position:relative;overflow:hidden}
+  .hero>*{position:relative;z-index:1}
+  .hero-art{position:absolute;right:-6px;bottom:0;height:88%;opacity:.16;pointer-events:none;z-index:0}
+  .hero-art.left{right:auto;left:-6px;transform:scaleX(-1)}
+  .logos{display:flex;justify-content:center;align-items:center;gap:18px;margin-bottom:12px}
+  .logos img{height:56px;width:56px;object-fit:contain;background:#fff;border-radius:50%;padding:4px}
+  .logos .fallback{height:56px;width:56px;border-radius:50%;background:#fff;color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.7rem}
+  .hero h1{font-size:1.25rem;letter-spacing:-.01em;margin-bottom:4px}
+  .hero .sub{font-size:.8rem;opacity:.88;max-width:34rem;margin:0 auto}
+  .hero .meta{margin-top:8px;font-size:.78rem;opacity:.85}
+  .offline-note{display:none;background:var(--gold);color:#5c4700;text-align:center;font-size:.75rem;font-weight:700;padding:5px}
+
+  /* ---------- Announcement ticker ---------- */
+  .announce{background:#fff;border-bottom:1px solid var(--line);padding:9px 14px;display:flex;gap:9px;align-items:flex-start;font-size:.84rem}
+  .announce .tag{background:var(--red);color:#fff;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:999px;flex-shrink:0;margin-top:2px}
+
+  /* ---------- Tabs ---------- */
+  .tabs{position:sticky;top:0;z-index:30;display:flex;background:#fff;border-bottom:2px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{flex:0 0 auto;padding:12px 15px;border:none;background:none;font:inherit;font-size:.82rem;font-weight:600;color:var(--slate);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+  .tabs button.on{color:var(--brand);border-bottom-color:var(--brand)}
+
+  main{max-width:760px;margin:0 auto;padding:14px}
+  .panel{display:none}
+  .panel.on{display:block}
+
+  /* ---------- Agenda ---------- */
+  .daybar{display:flex;gap:8px;margin-bottom:12px}
+  .daybar button{flex:1;padding:9px;border:1.5px solid var(--line);background:#fff;border-radius:10px;font:inherit;font-size:.8rem;font-weight:700;color:var(--slate);cursor:pointer}
+  .daybar button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .sess{background:#fff;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .sess .time{font-size:.72rem;font-weight:800;color:var(--brand-2);text-transform:uppercase;letter-spacing:.03em}
+  .sess h3{font-size:.95rem;margin:2px 0}
+  .sess .where{font-size:.78rem;color:var(--mist)}
+  .sess .who{font-size:.8rem;color:var(--slate);margin-top:3px}
+  .sess .cat{display:inline-block;margin-top:6px;background:var(--brand-soft);color:var(--brand);font-size:.66rem;font-weight:800;padding:2px 9px;border-radius:999px}
+
+  /* ---------- Speakers ---------- */
+  .spk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+  .spk .av{width:48px;height:48px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;overflow:hidden}
+  .spk .av img{width:100%;height:100%;object-fit:cover}
+  .spk h3{font-size:.95rem}
+  .spk .role{font-size:.78rem;color:var(--brand-2);font-weight:600}
+  .spk .bio{font-size:.8rem;color:var(--slate);margin-top:2px}
+  .spk.long{cursor:pointer;align-items:flex-start}
+  .spk.long .bio{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .spk.long.open .bio{display:block}
+  .spk .more{font-size:.72rem;font-weight:700;color:var(--brand-2);margin-top:4px}
+  .spk.open .more{display:none}
+
+  /* ---------- Abstracts ---------- */
+  .search{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:.9rem;margin-bottom:12px;background:#fff}
+  .search:focus{outline:none;border-color:var(--brand-2)}
+  .abs{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px}
+  .abs .id{font-size:.68rem;font-weight:800;color:var(--mist)}
+  .abs h3{font-size:.92rem;margin:2px 0}
+  .abs .auth{font-size:.78rem;color:var(--slate)}
+  .abs.has-body{cursor:pointer}
+  .abs-body{display:none;font-size:.83rem;color:var(--slate);margin-top:8px;white-space:pre-line;border-top:1px dashed var(--line);padding-top:8px}
+  .abs-more{font-size:.7rem;font-weight:700;color:var(--brand-2);margin-top:6px}
+  .abs.open .abs-body{display:block}
+  .abs.open .abs-more{display:none}
+
+  /* ---------- Home ---------- */
+  .welcome-h{font-size:1.15rem;color:var(--brand);margin-bottom:6px}
+  .welcome-p{font-size:.88rem;color:var(--slate);margin-bottom:14px}
+  .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .tip{background:var(--brand-soft);border:1px solid #cfe0f5;border-radius:10px;padding:11px 13px;font-size:.82rem;color:var(--slate)}
+
+  /* ---------- Info ---------- */
+  .info-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px;margin-bottom:10px}
+  .info-card h3{font-size:.95rem;color:var(--brand);margin-bottom:5px}
+  .info-card p{font-size:.85rem;color:var(--slate);white-space:pre-line}
+  .card-grid .info-card{margin-bottom:0}
+  .dev-credit{text-align:center;font-size:.78rem;color:var(--mist);padding:16px 0 4px}
+  .dev-credit a{color:var(--brand-2);font-weight:700}
+
+  .group-h{font-size:.8rem;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 10px}
+  .group-h:first-child{margin-top:2px}
+
+  /* ---------- Bauchi scene ---------- */
+  .scene{position:relative;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#f8cf7e;aspect-ratio:12/5}
+  .scene img{display:block;width:100%;height:100%;object-fit:cover}
+  .scene-cap{position:absolute;left:14px;top:10px;color:#5a3417;line-height:1.15}
+  .scene-cap b{display:block;font-size:1.35rem;letter-spacing:-.01em}
+  .scene-cap span{font-size:.8rem;font-style:italic}
+  .scene.photo::before{content:"";position:absolute;inset:0 0 45% 0;background:linear-gradient(rgba(0,0,0,.45),transparent);z-index:1}
+  .scene.photo .scene-cap{color:#fff;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .photo-credit{font-size:.66rem;color:var(--mist);margin:-4px 0 12px}
+  .photo-credit:empty{display:none}
+  .scene-credit{position:absolute;right:0;bottom:0;z-index:2;font-size:.56rem;white-space:nowrap;max-width:100%;line-height:1.3;padding:3px 8px;border-top-left-radius:8px;background:rgba(0,0,0,.45);color:#fff}
+  .scene-credit:empty{display:none}
+  .scene-credit a{color:#fff;text-decoration:underline}
+
+  /* ---------- Addresses ---------- */
+  .addr{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:12px}
+  .addr-kicker{font-size:.74rem;font-weight:700;color:var(--brand-2);margin-bottom:8px}
+  .addr-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+  .addr-head .av{width:56px;height:56px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;overflow:hidden}
+  .addr-head .av img{width:100%;height:100%;object-fit:cover}
+  .addr-head h3{font-size:1rem}
+  .addr-head .role{font-size:.78rem;color:var(--slate)}
+  .addr-body{font-size:.88rem;color:var(--ink);white-space:pre-line;line-height:1.6}
+  .addr.long .addr-body{max-height:9.6em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
+  .addr.long.open .addr-body{max-height:none;-webkit-mask-image:none;mask-image:none}
+  .addr-more{display:none;margin-top:8px;background:none;border:none;padding:0;font:inherit;font-size:.8rem;font-weight:700;color:var(--brand-2);cursor:pointer}
+  .addr.long .addr-more{display:inline-block}
+  .addr-soon{font-size:.84rem;color:var(--mist);font-style:italic}
+  .order-intro{font-size:.84rem;color:var(--slate);margin-bottom:10px}
+  .order-list{list-style:none;counter-reset:step;padding:0}
+  .order-list li{counter-increment:step;position:relative;padding:8px 0 8px 38px;border-top:1px solid var(--line);font-size:.88rem;line-height:1.45}
+  .order-list li::before{content:counter(step);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center}
+
+  /* ---------- Workshop ---------- */
+  .ws-title{font-size:1.12rem;line-height:1.35;color:var(--brand);margin:2px 0 12px}
+  .ws-cta{display:block;text-align:center;background:var(--brand);color:#fff;font-weight:800;font-size:.92rem;padding:13px;border-radius:12px;margin-bottom:6px}
+  .ws-cta-note{font-size:.76rem;color:var(--slate);text-align:center;margin-bottom:14px}
+  .facts{background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 15px;margin-bottom:14px}
+  .facts div{display:grid;grid-template-columns:7.5rem 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:.86rem}
+  .facts div:first-child{border-top:none}
+  .facts dt{color:var(--mist);font-weight:700;font-size:.78rem}
+  .facts dd{color:var(--ink)}
+  .flyer{display:block;width:100%;border-radius:12px;border:1px solid var(--line);cursor:zoom-in;margin-bottom:6px}
+  .flyer-note{font-size:.72rem;color:var(--mist);text-align:center;margin-bottom:14px}
+
+  /* ---------- Sponsors page ---------- */
+  .sp-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+  .sp-head{display:flex;gap:12px;align-items:center}
+  .sp-logo{width:64px;height:64px;border-radius:10px;border:1px solid var(--line);background:#fff;object-fit:contain;padding:4px;flex-shrink:0}
+  .sp-head h3{font-size:1rem}
+  .sp-desc{font-size:.85rem;color:var(--slate);margin-top:8px;white-space:pre-line}
+  .sp-flyer{display:block;width:100%;max-height:340px;object-fit:cover;object-position:top;border-radius:10px;margin-top:10px;cursor:zoom-in;border:1px solid var(--line)}
+  .sp-link{display:inline-block;margin-top:10px;background:var(--brand);color:#fff;font-size:.8rem;font-weight:800;padding:8px 18px;border-radius:999px}
+  .sp-empty{background:#fff;border:1.5px dashed #b9d9c2;border-radius:12px;padding:22px 16px;text-align:center}
+  .sp-empty h3{color:var(--brand);font-size:1rem;margin-bottom:6px}
+  .sp-empty p{font-size:.85rem;color:var(--slate)}
+
+  /* ---------- Image viewer ---------- */
+  .lb{position:fixed;inset:0;z-index:200;background:rgba(10,15,25,.92);display:none;align-items:center;justify-content:center;padding:14px;cursor:zoom-out}
+  .lb.on{display:flex}
+  .lb img{max-width:100%;max-height:100%;border-radius:8px}
+  .lb-x{position:absolute;top:10px;right:14px;color:#fff;font-size:1.8rem;line-height:1;background:none;border:none;cursor:pointer}
+
+  /* ---------- Yankari ---------- */
+  .yk-hero{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto}
+  .yk-hero img{height:110px;border-radius:10px;object-fit:cover;flex:1;min-width:0}
+  .yk-hero:empty{display:none}
+
+  /* ---------- Announcements ---------- */
+  .ann{background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .ann .d8{font-size:.7rem;font-weight:800;color:var(--mist);text-transform:uppercase;letter-spacing:.04em}
+  .ann h3{font-size:.92rem;margin:2px 0}
+  .ann p{font-size:.84rem;color:var(--slate)}
+  .ann-btn{display:inline-block;margin-top:8px;background:var(--brand);color:#fff;font-size:.76rem;font-weight:800;padding:7px 16px;border-radius:999px}
+
+  .empty{text-align:center;color:var(--mist);font-size:.85rem;padding:26px 0}
+
+  /* ---------- Notifications ---------- */
+  .notif-btn{display:block;width:100%;margin-top:12px;padding:12px;border:1.5px solid var(--brand);background:var(--brand-soft);color:var(--brand);font:inherit;font-size:.9rem;font-weight:700;border-radius:10px;cursor:pointer}
+  .toast{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:11px 16px;border-radius:12px;font-size:.85rem;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:92vw;opacity:0;pointer-events:none;transition:opacity .3s}
+  .toast b{display:block;font-size:.9rem}
+  .toast.on{opacity:1}
+
+  /* ---------- Sponsor slideshow (bottom) ---------- */
+  .sponsor{position:fixed;left:0;right:0;bottom:0;z-index:40;background:linear-gradient(135deg,#0d1b2e,#173a63);color:#fff;box-shadow:0 -6px 24px rgba(16,24,40,.25);padding-bottom:env(safe-area-inset-bottom)}
+  .sp-label{text-align:center;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:#9db8d8;padding-top:4px}
+  .sp-track{position:relative;height:72px;overflow:hidden}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2px 12px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;pointer-events:none}
+  .slide.on{opacity:1;transform:none;pointer-events:auto}
+  .slide .t{font-weight:800;font-size:.76rem;line-height:1.3}
+  .slide .t b{color:var(--gold)}
+  .slide .d{font-size:.62rem;line-height:1.35;color:#c8d8ec;margin:1px 0 4px;max-width:34rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .sp-btns{display:flex;gap:7px;flex-shrink:0}
+  .sp-btn{display:inline-block;font-size:.6rem;font-weight:800;padding:3px 11px;border-radius:999px;background:var(--gold);color:#3d2f00}
+  .sp-btn.ghost{background:transparent;border:1.5px solid #6c8db4;color:#dce8f5}
+  .sp-dots{display:flex;justify-content:center;gap:5px;padding:3px 0 5px}
+  .sp-dots span{width:6px;height:6px;border-radius:50%;background:#3f5c80;cursor:pointer}
+  .sp-dots span.on{background:var(--gold)}
+  @media(min-width:600px){ .sp-track{height:60px} }
+</style>
+</head>
+<body>
+
+<div class="offline-note" id="offlineNote">You're offline — showing saved programme</div>
+
+<header class="hero">
+  <svg class="hero-art" viewBox="0 0 200 120" aria-hidden="true" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+    <path d="M150 118 L156 30 C157 22 163 22 164 30 L170 118 Z"/>
+    <circle cx="160" cy="24" r="4"/>
+    <path d="M150 55 L142 50 M151 75 L142 71 M169 55 L177 50 M168 75 L177 71" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <path d="M20 118 C40 100 70 104 90 112 C110 104 130 108 148 114 L148 118 Z"/>
+    <path d="M50 95 C50 84 55 77 62 75 C64 67 74 67 77 74 C80 69 88 69 91 76 C97 77 100 83 100 90 C103 87 106 81 107 73 C107 67 112 65 114 67 C118 67 118 71 114 72 L111 75 C109 80 106 85 103 92 C102 95 98 98 92 99 L58 99 C53 99 50 97 50 95 Z"/>
+    <rect x="56" y="98" width="4.5" height="14" rx="2"/><rect x="66" y="98" width="4.5" height="14" rx="2"/><rect x="84" y="98" width="4.5" height="14" rx="2"/><rect x="93" y="98" width="4.5" height="14" rx="2"/>
+    <path d="M51 90 L45 101" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div class="logos">
+    <img src="apson-logo.png" alt="APSON logo" onerror="this.outerHTML='<div class=fallback>APSON</div>'">
+    <img src="atbuth-logo.png" alt="ATBUTH logo" onerror="this.outerHTML='<div class=fallback>ATBUTH</div>'">
+  </div>
+  <h1>APSON 2026 · 25th AGM</h1>
+  <p class="sub">25th Annual General Meeting &amp; Scientific Conference of the Association of Paediatric Surgeons of Nigeria — hosted by ATBUTH, Bauchi</p>
+  <p class="meta" id="eventMeta">23 – 26 September 2026 · International Conference Centre (ICC), Bauchi</p>
+</header>
+
+<div class="announce" id="announceBar" style="display:none">
+  <span class="tag">NEW</span><span id="announceText"></span><a id="announceLink" href="#" target="_blank" rel="noopener" style="display:none;font-weight:800;color:var(--brand-2);white-space:nowrap;margin-left:auto">Open →</a>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button data-p="home" class="on">Home</button>
+  <button data-p="agenda">Programme</button>
+  <button data-p="workshop">Workshop</button>
+  <button data-p="addresses">Addresses</button>
+  <button data-p="speakers">Speakers</button>
+  <button data-p="execs">Executives &amp; LOC</button>
+  <button data-p="abstracts">Abstracts</button>
+  <button data-p="info">Venue &amp; Info</button>
+  <button data-p="yankari">Yankari</button>
+  <button data-p="sponsors">Sponsors</button>
+  <button data-p="news">Announcements</button>
+  <button data-p="delegates">Delegates</button>
+</nav>
+
+<main>
+  <section class="panel on" id="p-home">
+    <div class="scene"><img alt="Yankari Game Reserve, Bauchi State"><div class="scene-cap"><b>Bauchi</b><span>The Pearl of Tourism</span></div><div class="scene-credit"></div></div>
+    <h2 class="welcome-h">Welcome, Delegates</h2>
+    <p class="welcome-p">Everything you need for APSON Bauchi 2026 — the live programme, abstract book, venue &amp; travel information, and real-time announcements.</p>
+    <div class="card-grid">
+      <div class="info-card"><h3>📅 Dates</h3><p>Outreach: 18th – 19th<br>Workshop: 22nd – 23rd<br>Conference: 23rd – 26th September 2026</p></div>
+      <div class="info-card"><h3>📍 Venue</h3><p>International Conference Centre (ICC), Bauchi — pre-conference workshop at Modular Theatre, ATBUTH</p></div>
+      <div class="info-card"><h3>🎯 Theme</h3><p id="confTheme">Advancing Paediatric Surgical Care in Nigeria: Innovation and Best Practices (sub-themes: Paediatric Trauma; Paediatric Surgical Infections)</p></div>
+      <div class="info-card"><h3>☎️ Enquiries</h3><p id="confContact">Prof. Kefas John Bwala, LOC Chairman — 0806 211 2679</p></div>
+    </div>
+    <p class="tip">💡 Tip: tap your browser's menu and choose <strong>"Add to Home Screen"</strong> to install this as an app. Once installed it keeps working even with a weak signal inside the venue.</p>
+    <button class="notif-btn" id="notifBtn" style="display:none">🔔 Enable announcement alerts</button>
+  </section>
+
+  <section class="panel" id="p-agenda">
+    <div class="daybar" id="daybar"></div>
+    <input class="search" id="agSearch" type="search" placeholder="Search sessions or speakers…">
+    <div id="agendaList"></div>
+  </section>
+
+  <section class="panel" id="p-workshop">
+    <div id="wsBox"></div>
+  </section>
+
+  <section class="panel" id="p-addresses">
+    <div id="addrList"></div>
+  </section>
+
+  <section class="panel" id="p-speakers">
+    <div id="speakerList"></div>
+  </section>
+
+  <section class="panel" id="p-execs">
+    <h3 class="group-h">APSON National Executives</h3>
+    <div id="execList"></div>
+    <h3 class="group-h">Local Organising Committee (LOC)</h3>
+    <div id="locList"></div>
+  </section>
+
+  <section class="panel" id="p-abstracts">
+    <input class="search" id="absSearch" type="search" placeholder="Search abstracts by title or author…">
+    <div id="absList"></div>
+  </section>
+
+  <section class="panel" id="p-info">
+    <div id="infoList"></div>
+  </section>
+
+  <section class="panel" id="p-yankari">
+    <div class="scene"><img alt="Yankari Game Reserve, Bauchi State"><div class="scene-cap"><b>Yankari</b><span>Game Reserve, Bauchi State</span></div><div class="scene-credit"></div></div>
+    <div class="yk-hero">
+      <img src="yankari/elephants.jpg" alt="Elephants at Yankari" loading="lazy" onerror="this.style.display='none'">
+      <img src="yankari/wikki.jpg" alt="Wikki Warm Springs" loading="lazy" onerror="this.style.display='none'">
+      <img src="yankari/safari.jpg" alt="Safari drive at Yankari" loading="lazy" onerror="this.style.display='none'">
+      <img src="yankari/tomb.jpg" alt="Tomb of Sir Abubakar Tafawa Balewa" loading="lazy" onerror="this.style.display='none'">
+    </div>
+    <p class="photo-credit" id="photoCredit"></p>
+    <div class="info-card"><h3>🐘 About Yankari</h3><p>Yankari Game Reserve, in southern Bauchi State, is Nigeria's premier wildlife destination — over 2,000 km² of savannah woodland first protected in the 1950s and long the country's best-known safari experience. It shelters one of West Africa's largest remaining elephant herds, alongside baboons, waterbuck, buffalo, hippos, crocodiles and hundreds of bird species.</p></div>
+    <div class="info-card"><h3>♨️ Wikki Warm Springs</h3><p>The jewel of Yankari — a crystal-clear natural spring that stays warm (~31°C) all year round. Delegates can swim in the spring after the game drive; it is a short walk from the main camp. Bring swimwear!</p></div>
+    <div class="info-card"><h3>🚙 The Excursion — Saturday 26th September</h3><p>8.00am – 6.00pm. A guided safari game drive in open-top trucks, a swim at Wikki Warm Springs, time for photos and refreshments at Wikki Camp, and a stop at the Tomb of Sir Abubakar Tafawa Balewa. Yankari is roughly a 1½–2 hour drive from Bauchi town — the LOC will announce departure times and transport.</p></div>
+    <div class="info-card"><h3>🏛️ Tomb of Sir Abubakar Tafawa Balewa</h3><p>The resting place of Nigeria's first Prime Minister (1960–66), in Bauchi town — a national monument and one of the state's best-known landmarks.</p></div>
+    <div class="info-card"><h3>🎒 What to Bring</h3><p>Comfortable clothing and shoes, hat and sunscreen, swimwear and a towel for the springs, camera or charged phone, and some cash for souvenirs and refreshments.</p></div>
+  </section>
+
+  <section class="panel" id="p-sponsors">
+    <div id="sponsorPage"></div>
+  </section>
+
+  <section class="panel" id="p-news">
+    <div id="newsList"></div>
+  </section>
+
+  <section class="panel" id="p-delegates">
+    <input class="search" id="delSearch" type="search" placeholder="Search delegates by name or institution…">
+    <div id="delegateList"></div>
+    <p class="dev-credit">Content last updated: <span id="lastUpdated">—</span><br>Event app developed by <a href="https://confhub.ng" target="_blank" rel="noopener">ConfHub.ng</a></p>
+  </section>
+</main>
+
+<div class="lb" id="lb" onclick="closeLB()"><button class="lb-x" aria-label="Close">×</button><img id="lbImg" alt=""></div>
+
+<!-- ===== Sponsor slideshow ===== -->
+<aside class="sponsor" aria-label="Sponsor">
+  <div class="sp-label">Sponsorship opportunity — your brand could be here</div>
+  <div class="sp-track" id="spTrack"></div>
+  <div class="sp-dots" id="spDots"></div>
+</aside>
+
+<script>
+/* =====================================================================
+   CONFIG — paste the Google Sheet link between the quotes below.
+   • It must be a real Google Sheet (File → Save as Google Sheets), not an
+     uploaded .xlsx — the link should NOT contain "rtpof=true".
+   • Share → General access → "Anyone with the link" → Viewer.
+   • The whole link or just the ID both work.
+   Leave it empty and the app shows the built-in copy of the content below.
+   ===================================================================== */
+const SHEET_LINK = "";
+
+const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SHEET_LINK).trim();
+/* Tabs and headings (must match the Sheet exactly):
+   Agenda:        day | time | title | speaker | venue | category
+   Speakers:      name | role | bio | photo
+   Executives:    name | position | photo
+   LOC:           name | position | institution | photo
+   Abstracts:     code | title | authors | body
+   Info:          heading | details      ("Theme" and "Enquiries" rows also fill the Home cards)
+   Announcements: date | title | message | link | linktext   (last row shows on Home)
+   Attendees:     name | institution     (names only — the Sheet is public)
+   SponsorBar:    label | title | message | buttontext | link   (rotating strip at the bottom)
+   Sponsors:      name | tier | description | logo | flyer | link | linktext   (the Sponsors page)
+   Workshop:      heading | details | link | linktext | image   (link row = button, image row = picture)
+   Addresses:     title | name | position | photo | body   (empty body = "to be published soon")
+   Images can be a file in the app folder or a Google Drive image link shared "Anyone with the link".
+   Links starting with # open an app tab, e.g. #workshop.
+*/
+
+/* ---------- Sample data (replaced by the Sheet when connected) ---------- */
+const SAMPLE = {
+"Agenda": [
+{
+"day": "Fri 18",
+"time": "08:00 – 17:00",
+"title": "Pre-conference Outreach — Day 1",
+"speaker": "",
+"venue": "Venue to be announced",
+"category": "Outreach"
+},
+{
+"day": "Sat 19",
+"time": "08:00 – 17:00",
+"title": "Pre-conference Outreach — Day 2",
+"speaker": "",
+"venue": "Venue to be announced",
+"category": "Outreach"
+},
+{
+"day": "Tue 22",
+"time": "08:00 – 16:00",
+"title": "Pre-conference Workshop (Day 1): Endorectal Pull-Through for Hirschsprung Disease & Anterior Sagittal Anorectoplasty (ASARP) for Anorectal Malformation — lecture and live operation session",
+"speaker": "Facilitators: Prof. L. B. Chirdan · Dr. Moruf Abdulsalam",
+"venue": "Modular Theatre, ATBUTH",
+"category": "Workshop"
+},
+{
+"day": "Wed 23",
+"time": "08:00 – 16:00",
+"title": "Pre-conference Workshop (Day 2): Endorectal Pull-Through for Hirschsprung Disease & Anterior Sagittal Anorectoplasty (ASARP) for Anorectal Malformation — lecture and live operation session",
+"speaker": "Facilitators: Prof. L. B. Chirdan · Dr. Moruf Abdulsalam",
+"venue": "Modular Theatre, ATBUTH",
+"category": "Workshop"
+},
+{
+"day": "Wed 23",
+"time": "17:00 – 19:00",
+"title": "Welcome Cocktail",
+"speaker": "",
+"venue": "Venue to be announced",
+"category": "Social"
+},
+{
+"day": "Thu 24",
+"time": "08:00 – 09:00",
+"title": "1st Scientific Session — Abstracts 1–7 (6 min each) with Q&A",
+"speaker": "Chair: Prof. Christopher Lukong · Co-chair: Dr. Samuel Wabada",
+"venue": "ICC, Bauchi",
+"category": "Scientific"
+},
+{
+"day": "Thu 24",
+"time": "09:00 – 10:00",
+"title": "2nd Scientific Session — Abstracts 8–14 (6 min each) with Q&A",
+"speaker": "Chair: Prof. Christopher Bode · Co-chair: Dr. Omolara Fagboya",
+"venue": "ICC, Bauchi",
+"category": "Scientific"
+},
+{
+"day": "Thu 24",
+"time": "10:00 – 10:30",
+"title": "Tea Break",
+"speaker": "",
+"venue": "ICC, Bauchi",
+"category": "Break"
+},
+{
+"day": "Thu 24",
+"time": "10:30 – 13:00",
+"title": "Opening Ceremony",
+"speaker": "Chairman of the occasion: Prof. Ibrahim Garba",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Welcome address",
+"speaker": "Prof. Kefas John Bwala, LOC Chairman",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Address by the APSON President",
+"speaker": "Prof. Roland I. Osuoji",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Goodwill messages",
+"speaker": "Chief Host",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Message by the Chairman of the occasion",
+"speaker": "Prof. Ibrahim Garba",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Citation of the keynote speaker",
+"speaker": "Dr. Aminu M. Umar",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Keynote Address: What the Theater Doesn't Teach You — Insights from a Career in Surgical Education",
+"speaker": "Prof. Ben Nwomeh",
+"venue": "ICC, Bauchi",
+"category": "Keynote"
+},
+{
+"day": "Thu 24",
+"time": "",
+"title": "Message by the Special Guest and declaration of the conference open",
+"speaker": "His Excellency, Senator Bala Abdulkadir Mohammed CON, Kauran Daulan Usmaniyya, Executive Governor of Bauchi State",
+"venue": "ICC, Bauchi",
+"category": "Ceremony"
+},
+{
+"day": "Thu 24",
+"time": "13:00 – 14:00",
+"title": "Lunch Break",
+"speaker": "",
+"venue": "ICC, Bauchi",
+"category": "Break"
+},
+{
+"day": "Thu 24",
+"time": "14:00 – 15:00",
+"title": "3rd Scientific Session — Abstracts 15–21 (6 min each) with Q&A",
+"speaker": "Chair: Prof. A. M. Abubakar · Co-chair: Prof. Ugwu",
+"venue": "ICC, Bauchi",
+"category": "Scientific"
+},
+{
+"day": "Thu 24",
+"time": "15:00 – 16:00",
+"title": "4th Scientific Session — Abstracts 22–28 (6 min each) with Q&A",
+"speaker": "Chair: Prof. L. B. Chirdan · Co-chair: Dr. Sholadoye",
+"venue": "ICC, Bauchi",
+"category": "Scientific"
+},
+{
+"day": "Thu 24",
+"time": "16:00 – 17:00",
+"title": "Discussion Session: Artificial Intelligence in Paediatric Surgery — How I Do It",
+"speaker": "Prof. Ben Nwomeh · Chair: Prof. Mshelbwala",
+"venue": "ICC, Bauchi",
+"category": "Discussion"
+},
+{
+"day": "Fri 25",
+"time": "08:00 – 09:00",
+"title": "5th Scientific Session — Abstracts 29–35 (6 min each) with Q&A",
+"speaker": "Chair: Prof. Sani Adamu · Co-chair: Dr. Jones Taiwo",
+"venue": "ICC, Bauchi",
+"category": "Scientific"
+},
+{
+"day": "Fri 25",
+"time": "09:00 – 10:00",
+"title": "6th Scientific Session — Abstracts 36–42 (6 min each) with Q&A",
+"speaker": "Chair: Prof. Muhammed Aminu · Co-chair: Dr. Muslimat Alada",
+"venue": "ICC, Bauchi",
+"category": "Scientific"
+},
+{
+"day": "Fri 25",
+"time": "10:00 – 10:30",
+"title": "Tea Break",
+"speaker": "",
+"venue": "ICC, Bauchi",
+"category": "Break"
+},
+{
+"day": "Fri 25",
+"time": "10:30 – 11:00",
+"title": "1st Guest Lecture: Nigeria Health Sector Reform — The Journey So Far",
+"speaker": "Dr. Ashiru Adamu Abubakar",
+"venue": "ICC, Bauchi",
+"category": "Lecture"
+},
+{
+"day": "Fri 25",
+"time": "11:00 – 11:30",
+"title": "2nd Guest Lecture: Building Excellence in Paediatric Surgery through Skills Acquisition, Research Development and Professional Community Engagement among Nigerian Resident Doctors",
+"speaker": "Prof. Lukman O. Abdur-Rahman",
+"venue": "ICC, Bauchi",
+"category": "Lecture"
+},
+{
+"day": "Fri 25",
+"time": "11:30 – 12:30",
+"title": "Guest Lecture: A Child, the White Coat and a Scalpel — Where Is the Doctor?",
+"speaker": "Prof. Stephen Obaro",
+"venue": "ICC, Bauchi",
+"category": "Lecture"
+},
+{
+"day": "Fri 25",
+"time": "12:00 – 13:00",
+"title": "Panel Discussion: Separation of Conjoined Twins",
+"speaker": "Prof. A. M. Abubakar and team",
+"venue": "ICC, Bauchi",
+"category": "Panel"
+},
+{
+"day": "Fri 25",
+"time": "13:00 – 14:00",
+"title": "Lunch Break",
+"speaker": "",
+"venue": "ICC, Bauchi",
+"category": "Break"
+},
+{
+"day": "Fri 25",
+"time": "14:00 – 14:30",
+"title": "African Journal of Paediatric Surgery (AJPS): Transition, Milestones and the Road Ahead",
+"speaker": "Prof. O. H. Ekwenife",
+"venue": "ICC, Bauchi",
+"category": "Lecture"
+},
+{
+"day": "Fri 25",
+"time": "14:30 – 15:00",
+"title": "The Art and Science of Peer Review: A Practical Guide to Rigorous, Constructive and Ethical Review of Surgical Manuscripts",
+"speaker": "Prof. Abdulrasheed A. Nasir",
+"venue": "ICC, Bauchi",
+"category": "Lecture"
+},
+{
+"day": "Fri 25",
+"time": "15:00 – 19:00",
+"title": "APSON Annual General Meeting",
+"speaker": "",
+"venue": "ICC, Bauchi",
+"category": "AGM"
+},
+{
+"day": "Fri 25",
+"time": "20:00 – 22:00",
+"title": "Farewell Dinner",
+"speaker": "",
+"venue": "Venue to be announced",
+"category": "Social"
+},
+{
+"day": "Sat 26",
+"time": "08:00 – 18:00",
+"title": "Excursion: Yankari Game Reserve and Wikki Warm Springs, with a visit to the Tomb of Sir Abubakar Tafawa Balewa",
+"speaker": "",
+"venue": "Yankari, Bauchi State",
+"category": "Excursion"
+}
+],
+"Speakers": [
+{
+"name": "Prof. Ben Nwomeh",
+"role": "Keynote Speaker — Nationwide Children's Hospital & The Ohio State University, Columbus, Ohio, USA",
+"bio": "MBBS (Hons) Lagos, MPH, FRCSEng, FRCSEd, FRCSGlas, FACS, FWACS, FAAP. Professor of Surgery, Pediatrics and Epidemiology and Vice-Chair, Department of Surgery, The Ohio State University College of Medicine; Director of Education for Surgical Services and Program Director, Pediatric Surgery, Nationwide Children's Hospital. He has served in the executive leadership of the Association for Academic Surgery and the Society of University Surgeons, as a Governor of both the American College of Surgeons and APSA, and as President of the Association of Pediatric Surgery Training Program Directors. He is a member of the ACS Academy of Master Surgeon Educators and the American Surgical Association, sits on the Council of the American Board of Surgery, and is Director and Chair-Elect of its Pediatric Surgery Board. Author of 5 books, 50 book chapters and more than 200 journal articles. A native of Ozalla, Nkanu West LGA, Enugu State. Speaking on: 'What the Theater Doesn't Teach You' (keynote, Thu 24) and 'AI in Paediatric Surgery — How I Do It' (Thu 24).",
+"photo": "speakers/nwomeh.jpg"
+},
+{
+"name": "Prof. Stephen Obaro",
+"role": "Guest Lecturer — Division of Infectious Diseases, University of Alabama at Birmingham, USA",
+"bio": "MBBS, FWACP, MRCP(UK), FRCPCH, FAAP, PhD, FIDSA, FPIDSA. Professor of Pediatrics and Infectious Diseases and Helen and Robert Whitley Endowed Chair of Pediatric Infectious Diseases, University of Alabama at Birmingham; Associate Director, Mary Heersink Institute of Global Health. A graduate of Ahmadu Bello University, Zaria, he holds a PhD in Immunology from Imperial College London. As Head of Field Station at the UK Medical Research Council Laboratories in The Gambia, his team's surveillance of pneumococcal disease in children informed the pneumococcal conjugate vaccine for developing countries. He is Founder and Chief Scientific Officer of the International Foundation Against Infectious Disease in Nigeria (IFAIN). He has more than 170 peer-reviewed publications and is ranked among the world's top 2% most-cited scientists in his field. Speaking on: 'A Child, the White Coat and a Scalpel — Where Is the Doctor?' (Fri 25).",
+"photo": "speakers/obaro.jpg"
+},
+{
+"name": "Prof. Lukman O. Abdur-Rahman",
+"role": "Guest Lecturer — Paediatric Surgeon, University of Ilorin, Kwara State",
+"bio": "MB;BS, MPH (Ilorin), MD (NPMCN), FWACS, FMCS, FACS, FMAS (India). Professor of Paediatric Surgery, University of Ilorin, Consultant Paediatric Surgeon, UITH, and Vice President of APSON (2022–2026). He established therapeutic laparoscopic surgery (2010) and the paediatric day-case surgical service at UITH, and invented the ARISE suction oesophageal tube for oesophageal atresia. A pioneer of simulation-based medical education, he coordinates the WACS Basic Surgical Skills Course, and was Head of Surgery (2018–2021) and Dean, Faculty of Clinical Sciences (2023–2025) at Ilorin. He has over 150 scholarly publications and is Deputy Director (Education, Training and Research) of the NIHR Global Surgery Unit Nigeria Hub. Speaking on: 'Building Excellence in Paediatric Surgery … among Nigerian Resident Doctors' (Fri 25).",
+"photo": "speakers/abdurrahman.jpg"
+},
+{
+"name": "Prof. L. B. Chirdan",
+"role": "Workshop Facilitator — Chief Consultant and Professor of Paediatric Surgery, University of Jos / JUTH",
+"bio": "A past Secretary of APSON and an expert in endorectal pull-through for Hirschsprung disease. Facilitating the pre-conference workshop (Tue 22 – Wed 23).",
+"photo": "speakers/chirdan.jpg"
+},
+{
+"name": "Dr. Moruf Abdulsalam",
+"role": "Workshop Facilitator — Consultant Paediatric Surgeon, Lagos State University Teaching Hospital, Ikeja",
+"bio": "An expert in anorectal anomalies, teaching anterior sagittal anorectoplasty (ASARP) at the pre-conference workshop (Tue 22 – Wed 23).",
+"photo": "speakers/abdulsalam.jpg"
+},
+{
+"name": "Dr. Ashiru Adamu Abubakar",
+"role": "Guest Lecturer",
+"bio": "Speaking on: 'Nigeria Health Sector Reform — The Journey So Far' (Fri 25).",
+"photo": ""
+},
+{
+"name": "Prof. O. H. Ekwenife",
+"role": "Invited Speaker",
+"bio": "Speaking on: 'African Journal of Paediatric Surgery (AJPS): Transition, Milestones and the Road Ahead' (Fri 25).",
+"photo": ""
+},
+{
+"name": "Prof. Abdulrasheed A. Nasir",
+"role": "Invited Speaker",
+"bio": "Speaking on: 'The Art and Science of Peer Review' (Fri 25).",
+"photo": ""
+}
+],
+"Executives": [
+{
+"name": "Prof. Roland I. Osuoji",
+"position": "President - LASUTH Lagos",
+"photo": "executives/osuoji.jpg"
+},
+{
+"name": "Prof. Lukman Abdur-Rahman",
+"position": "Vice President",
+"photo": "executives/rahman.jpg"
+},
+{
+"name": "Dr. Jideofor Ugwu",
+"position": "Secretary-General",
+"photo": "executives/ugwu.jpg"
+},
+{
+"name": "Dr. Omolara Fagboya",
+"position": "Treasurer",
+"photo": "executives/fagboya.jpg"
+},
+{
+"name": "Prof. Kefas Bwala",
+"position": "Publicity Secretary",
+"photo": "executives/bwala.jpg"
+},
+{
+"name": "Dr. Samuel Wabada",
+"position": "Financial Secretary",
+"photo": "executives/wabada.jpg"
+},
+{
+"name": "Dr. Tunde Sholadoye",
+"position": "Assistant Gen-Sec",
+"photo": "executives/shola.jpg"
+},
+{
+"name": "Prof. Auwal Abubakar",
+"position": "Ex-Officio I",
+"photo": "executives/abu.jpg"
+},
+{
+"name": "Prof. Usang Usang",
+"position": "Ex-Officio II",
+"photo": "executives/usang.jpg"
+}
+],
+"LOC": [
+{
+"name": "Prof. Kefas John Bwala",
+"position": "LOC Chairman",
+"institution": "ATBUTH, Bauchi",
+"photo": "executives/bwala.jpg"
+},
+{
+"name": "Prof. Auwal Abubakar",
+"position": "LOC Co-Chairman",
+"institution": "MAUTH, Yola",
+"photo": "executives/abu.jpg"
+},
+{
+"name": "Dr. Aminu M. Umar",
+"position": "LOC Secretary",
+"institution": "ATBUTH, Bauchi",
+"photo": "loc/umar.jpg"
+}
+],
+"Abstracts": [
+{
+"code": "",
+"title": "Accepted abstracts will be listed here before the conference",
+"authors": "",
+"body": ""
+}
+],
+"Info": [
+{
+"heading": "Theme",
+"details": "Advancing Paediatric Surgical Care in Nigeria: Innovation and Best Practices. Sub-themes: Paediatric Trauma; Paediatric Surgical Infections."
+},
+{
+"heading": "Enquiries",
+"details": "Prof. Kefas John Bwala, LOC Chairman — 0806 211 2679"
+},
+{
+"heading": "Venue",
+"details": "Main conference (24th–25th September): International Conference Centre (ICC), Bauchi. Pre-conference workshop (22nd–23rd): Modular Theatre, ATBUTH, Bauchi."
+},
+{
+"heading": "Pre-conference Outreach",
+"details": "Outreach days on Friday 18th and Saturday 19th September, 8.00am – 5.00pm. Venue and details will be announced here."
+},
+{
+"heading": "Pre-conference Workshop",
+"details": "22nd–23rd September, Modular Theatre, ATBUTH. Full details, facilitators and registration are on the Workshop tab."
+},
+{
+"heading": "Online Registration",
+"details": "Register at: https://forms.gle/NWZvErhCvBe55nqv6"
+},
+{
+"heading": "Payment Details",
+"details": "Association of Paediatric Surgeons of Nigeria — Union Bank — Account No. 0237243327."
+},
+{
+"heading": "Arriving by Air",
+"details": "Fly into Sir Abubakar Tafawa Balewa International Airport, Bauchi. Taxis are available at arrivals (agree the fare before you set off); the drive into Bauchi town takes roughly 30-40 minutes. LOC airport pickup and shuttle arrangements will be announced here."
+},
+{
+"heading": "Getting to the Venue",
+"details": "Main conference: International Conference Centre (ICC), Bauchi - follow conference signage; ushers will direct delegates. Workshop (22nd-23rd): Modular Theatre, inside the ATBUTH main complex - enter through the main hospital gate."
+},
+{
+"heading": "Social Programme",
+"details": "Welcome cocktail: Wednesday 23rd September, 5.00 – 7.00pm. Farewell dinner: Friday 25th September, 8.00 – 10.00pm. Venues will be announced here."
+},
+{
+"heading": "Yankari Excursion",
+"details": "Saturday 26th September, 8.00am – 6.00pm: Yankari Game Reserve and Wikki Warm Springs, with a visit to the Tomb of Sir Abubakar Tafawa Balewa. See the Yankari tab for what to expect."
+},
+{
+"heading": "Leadership",
+"details": "Prof. Roland I. Osuoji (APSON President, LASUTH Lagos) | Prof. Lukman O. Abdur-Rahman (APSON Vice President, University of Ilorin) | Prof. Kefas John Bwala (LOC Chairman, ATBUTH Bauchi) | Prof. Auwal Abubakar (LOC Co-Chairman, MAUTH Yola) | Dr. Aminu M. Umar (LOC Secretary, ATBUTH Bauchi)."
+},
+{
+"heading": "APSON Online",
+"details": "Website: www.apsonnigeria.org · Email: info@apsonnigeria.org · Facebook: APSON Nigeria · X: @APSON_Nigeria"
+}
+],
+"Announcements": [
+{
+"date": "",
+"title": "Full programme now in the app",
+"message": "The conference programme — scientific sessions, the opening ceremony, guest lectures, the AGM and the Yankari excursion — is on the Programme tab. Sessions may be updated; this app refreshes automatically.",
+"link": "",
+"linktext": ""
+},
+{
+"date": "",
+"title": "Pre-conference workshop — registration open",
+"message": "Endorectal Pull-Through for Hirschsprung Disease & ASARP for Anorectal Malformation: 22nd–23rd September, Modular Theatre, ATBUTH. Fee ₦50,000.",
+"link": "https://forms.gle/Mr3hpVuuV9FtBZnn9",
+"linktext": "Register for the workshop"
+}
+],
+"Attendees": [],
+"SponsorBar": [
+{
+"label": "Sponsorship opportunity — your brand could be here",
+"title": "Your brand, on every delegate's phone",
+"message": "The official APSON 2026 app is open for a headline sponsor — visible on every screen, all conference long.",
+"buttontext": "Become the sponsor",
+"link": "https://confhub.ng/#contact"
+},
+{
+"label": "",
+"title": "Reach paediatric surgeons all week",
+"message": "Fellows, residents and nurses from across Nigeria see this space every time they check the programme.",
+"buttontext": "Contact ConfHub",
+"link": "https://confhub.ng/#contact"
+},
+{
+"label": "",
+"title": "ConfHub — smart event apps for conferences",
+"message": "Live agenda, abstracts and announcements — built for Nigerian scientific meetings.",
+"buttontext": "Visit confhub.ng",
+"link": "https://confhub.ng"
+}
+],
+"Sponsors": [],
+"Workshop": [
+{
+"heading": "Workshop",
+"details": "Endorectal Pull-Through for Hirschsprung Disease & Anterior Sagittal Anorectoplasty (ASARP) for Anorectal Malformation",
+"link": "",
+"linktext": "",
+"image": ""
+},
+{
+"heading": "Format",
+"details": "Lectures and live operation sessions",
+"link": "",
+"linktext": "",
+"image": ""
+},
+{
+"heading": "Dates",
+"details": "Tuesday 22nd – Wednesday 23rd September 2026, 8.00am – 4.00pm each day",
+"link": "",
+"linktext": "",
+"image": ""
+},
+{
+"heading": "Venue",
+"details": "Modular Theatre, ATBUTH, Bauchi — enter through the main hospital gate",
+"link": "",
+"linktext": "",
+"image": ""
+},
+{
+"heading": "Fee",
+"details": "₦50,000",
+"link": "",
+"linktext": "",
+"image": ""
+},
+{
+"heading": "In collaboration with",
+"details": "Department of Surgery, Paediatric Surgery Unit, ATBUTH",
+"link": "",
+"linktext": "",
+"image": ""
+},
+{
+"heading": "Registration",
+"details": "Register online before the workshop.",
+"link": "https://forms.gle/Mr3hpVuuV9FtBZnn9",
+"linktext": "Register for the workshop",
+"image": ""
+},
+{
+"heading": "Flyer",
+"details": "",
+"link": "",
+"linktext": "",
+"image": "workshop/flyer.jpg"
+}
+],
+"Addresses": [
+{
+"title": "Welcome Address by the APSON President",
+"name": "Prof. Roland I. Osuoji",
+"position": "President, Association of Paediatric Surgeons of Nigeria",
+"photo": "executives/osuoji.jpg",
+"body": "The 25th anniversary is usually an important landmark in the history of any organisation, and even more so in ours, the Association of Paediatric Surgeons of Nigeria (APSON). Bauchi may have been chosen by serendipity to host this conference, but that chance has paid off handsomely. I welcome you all to what will turn out to be a very exciting annual conference and AGM.\n\nThis conference was kick-started with a pre-conference outreach, followed by a pre-conference workshop whose facilitators were Professor L. B. Chirdan and Dr Moruf Abdulsalam. The former, a past Secretary of APSON and an expert in endorectal pull-through for Hirschsprung's disease, taught me transanal pull-through for Hirschsprung's disease at a pre-conference workshop in Jos in 2008, during the 7th APSON Conference and AGM. We are lucky and grateful to have him teach us what he is very good at. The latter, Dr Moruf Abdulsalam, a Consultant Paediatric Surgeon, is an expert in anorectal anomalies and came to teach us the alternative to posterior sagittal anorectoplasty, anterior sagittal anorectoplasty, for the treatment of anorectal anomalies in female children. He knows how to effectively marry academics with politics, a very rare feat.\n\nThe theme of the conference, Advancing Paediatric Surgical Care in Nigeria: Innovation and Best Practices, was well thought out by the members of the Local Organising Committee, who have worked tirelessly to assemble renowned experts to do justice to it. I would like to welcome and thank our guest speakers who have travelled from far and near to honour our invitation and do this selfless assignment. This is a huge sacrifice. In no particular order: Professor Ben Nwomeh, Paediatric Surgeon, Nationwide Children's Hospital, Columbus, Ohio, USA; Prof Stephen Obaro, Department of Paediatrics, Division of Infectious Diseases, University of Alabama at Birmingham, USA; and our own Vice President of APSON, Professor Lukman O. Abdur-Rahman, Paediatric Surgeon, University of Ilorin, Kwara State, Nigeria.\n\nMy special thanks to the members of the LOC for putting up this very conference; the conference venue is very intimidating. To all participants who have travelled from all parts of the country, I wish you a very fruitful and exciting 25th anniversary APSON annual conference and AGM.\n\n— Prof. Roland I. Osuoji, President, APSON"
+},
+{
+"title": "Welcome Address by the LOC Chairman",
+"name": "Prof. Kefas John Bwala",
+"position": "Chairman, Local Organising Committee — ATBUTH, Bauchi",
+"photo": "executives/bwala.jpg",
+"body": ""
+},
+{
+"title": "Opening Ceremony — Order of Proceedings",
+"name": "",
+"position": "",
+"photo": "",
+"body": "Thursday 24th September 2026, 10.30am – 1.00pm\nInternational Conference Centre (ICC), Bauchi\nChairman of the occasion: Prof. Ibrahim Garba\n\n1. National Anthem\n2. Welcome address — Prof. Kefas John Bwala, LOC Chairman\n3. Address by the APSON President — Prof. Roland I. Osuoji\n4. Goodwill messages — Chief Host\n5. Message by the Chairman of the occasion — Prof. Ibrahim Garba\n6. Citation of the keynote speaker — Dr. Aminu M. Umar\n7. Keynote address: What the Theater Doesn't Teach You — Insights from a Career in Surgical Education — Prof. Ben Nwomeh\n8. Message by the Special Guest and declaration of the conference open — His Excellency, Senator Bala Abdulkadir Mohammed CON, Kauran Daulan Usmaniyya, Executive Governor of Bauchi State\n9. National Anthem"
+},
+{
+"title": "Appreciation by the LOC",
+"name": "Local Organising Committee",
+"position": "APSON Bauchi 2026",
+"photo": "",
+"body": ""
+}
+]
+};
+
+/* ---------- Data loading: Google Sheet (via opensheet.elk.sh) with offline cache ---------- */
+const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Addresses"];
+/* A misspelt or missing tab makes Google return the FIRST tab instead of an error.
+   Checking a tab's headings stops the Agenda from turning up under Delegates. */
+const NEED = {Agenda:["day","title"],Speakers:["name","role"],Executives:["name","position"],LOC:["name","institution"],
+  Abstracts:["code","title"],Info:["heading","details"],Announcements:["title","message"],Attendees:["name","institution"],
+  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Addresses:["title","body"]};
+const fits = (tab, rows) => rows.length > 0 && NEED[tab].every(k => k in rows[0]);
+let DATA = JSON.parse(localStorage.getItem("ap26-data5") || "null") || SAMPLE;
+
+
+/* ---------- Sheet fetching: Google direct first, relay as backup ---------- */
+function parseCSV(text){
+  const rows=[]; let row=[], field="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c === '"'){ if(text[i+1] === '"'){ field+='"'; i++; } else q=false; }
+      else field+=c;
+    } else if(c === '"'){ q=true; }
+    else if(c === ','){ row.push(field); field=""; }
+    else if(c === '\n'){ row.push(field); rows.push(row); row=[]; field=""; }
+    else if(c !== '\r'){ field+=c; }
+  }
+  if(field.length || row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+function csvToObjects(text){
+  const rows = parseCSV(text).filter(r => r.some(c => (c||"").trim() !== ""));
+  if(rows.length < 2) return [];
+  const hdr = rows[0].map(h => (h||"").trim());
+  return rows.slice(1).map(r => { const o={}; hdr.forEach((h,i) => o[h] = (r[i]||"").trim()); return o; });
+}
+async function fetchTab(tab){
+  const gviz = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(tab)}`;
+  try {
+    const r = await fetch(gviz, { cache: "no-store" });
+    if(r.ok){ const rows = csvToObjects(await r.text()); if(fits(tab, rows)) return rows; }
+  } catch(e){}
+  try {
+    const r = await fetch(`https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(tab)}`, { cache: "no-store" });
+    if(r.ok){ const j = await r.json(); if(Array.isArray(j) && fits(tab, j)) return j; }
+  } catch(e){}
+  return [];
+}
+
+async function refresh(){
+  if(!SHEET_ID) return;
+  try{
+    const results = await Promise.all(TABS.map(t => fetchTab(t)));
+    const fresh = {};
+    TABS.forEach((t,i) => fresh[t] = Array.isArray(results[i]) ? results[i] : []);
+    if(fresh.Agenda.length){
+      DATA = fresh;
+      localStorage.setItem("ap26-data5", JSON.stringify(fresh));
+      localStorage.setItem("ap26-updated", new Date().toLocaleString("en-GB", {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"}));
+      renderAll();
+      checkNewAnnouncement();
+    }
+  }catch(e){ /* offline — keep cached data */ }
+}
+setInterval(refresh, 90000); // re-fetch every 90 seconds while open
+document.addEventListener("visibilitychange", () => { if(!document.hidden) refresh(); });
+window.addEventListener("offline", () => document.getElementById("offlineNote").style.display = "block");
+window.addEventListener("online",  () => { document.getElementById("offlineNote").style.display = "none"; refresh(); });
+if(!navigator.onLine) document.getElementById("offlineNote").style.display = "block";
+
+/* ---------- Rendering ---------- */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TITLE_RE = /^(dr|prof|professor|mr|mrs|ms|miss|engr|rev|chief|sir|alhaji|alhaja|hon|pharm|barr)\.?,?$/i;
+function initialsOf(name){
+  const parts = String(name || "?").trim().split(/\s+/).filter(w => !TITLE_RE.test(w));
+  if(!parts.length) return "?";
+  const first = parts[0][0] || "";
+  const last  = parts.length > 1 ? parts[parts.length-1][0] : "";
+  return (first + last).toUpperCase();
+}
+/* Google Drive share links don't display as images; turn them into a direct thumbnail. */
+function imgSrc(u){
+  u = String(u || "").trim();
+  const m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([A-Za-z0-9_-]{20,})/);
+  return m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1600` : u;
+}
+function openLB(src){ document.getElementById("lbImg").src = src; document.getElementById("lb").classList.add("on"); }
+function closeLB(){ document.getElementById("lb").classList.remove("on"); }
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeLB(); });
+/* Banner picture: tries each source in turn and shows the matching photo credit.
+   1) yankari/hero.jpg if the LOC supplies one (credit from the Info row "Photo credits")
+   2) Wikki Warm Spring by Charles Emogor, CC BY-SA 4.0, via Wikimedia Commons (free licence, credit required)
+   3) the built-in Bauchi illustration */
+const WIKKI_CREDIT = {text:"Photo: Charles Emogor · CC BY-SA 4.0 · Wikimedia Commons", link:"https://commons.wikimedia.org/wiki/File:Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg"};
+const HERO = [
+  {src:"yankari/hero.jpg", credit:"sheet"},
+  {src:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg/1280px-Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg", credit:WIKKI_CREDIT},
+  {src:"https://commons.wikimedia.org/wiki/Special:FilePath/Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg?width=960", credit:WIKKI_CREDIT},
+  {src:"bauchi.svg", credit:null}
+];
+function loadHero(){
+  document.querySelectorAll(".scene").forEach(sc => {
+    const img = sc.querySelector("img"), cr = sc.querySelector(".scene-credit");
+    let i = 0;
+    const next = () => {
+      const h = HERO[i++]; if(!h) return;
+      img.onerror = next;
+      img.onload = () => {
+        sc.classList.toggle("photo", !/\.svg$/.test(h.src));
+        let c = h.credit;
+        if(c === "sheet"){ const r = (DATA.Info || []).find(x => (x.heading||"").toLowerCase() === "photo credits"); c = r ? {text:r.details} : null; }
+        cr.innerHTML = c ? (c.link ? `<a href="${c.link}" target="_blank" rel="noopener">${esc(c.text)}</a>` : esc(c.text)) : "";
+      };
+      img.src = h.src;
+    };
+    next();
+  });
+}
+let currentDay = null;
+
+function renderAgenda(){
+  const rows = DATA.Agenda || [];
+  const q = (document.getElementById("agSearch").value || "").toLowerCase();
+  const days = [...new Set(rows.map(r => r.day).filter(Boolean))];
+  if(!currentDay || !days.includes(currentDay)) currentDay = days[0];
+  document.getElementById("daybar").innerHTML = days.map(d =>
+    `<button class="${d===currentDay?"on":""}" onclick="currentDay='${esc(d)}';renderAgenda()">${esc(d)}</button>`).join("");
+  const list = rows.filter(r => q
+    ? ((r.title||"").toLowerCase().includes(q) || (r.speaker||"").toLowerCase().includes(q))
+    : r.day === currentDay);
+  document.getElementById("agendaList").innerHTML = list.length ? list.map(r => `
+    <div class="sess">
+      ${r.time ? `<div class="time">${esc(r.time)}</div>` : ""}
+      <h3>${esc(r.title)}</h3>
+      ${r.speaker ? `<div class="who">🎤 ${esc(r.speaker)}</div>` : ""}
+      ${r.venue ? `<div class="where">📍 ${esc(r.venue)}</div>` : ""}
+      ${r.category ? `<span class="cat">${esc(r.category)}</span>` : ""}
+    </div>`).join("") : `<p class="empty">Programme coming soon.</p>`;
+}
+
+function renderSpeakers(){
+  const rows = DATA.Speakers || [];
+  document.getElementById("speakerList").innerHTML = rows.length ? rows.map(r => {
+    const initials = esc(initialsOf(r.name));
+    const av = r.photo
+      ? `<div class="av"><img src="${esc(imgSrc(r.photo))}" alt="${esc(r.name)}" loading="lazy" onerror="this.parentNode.textContent='${initials}'"></div>`
+      : `<div class="av">${initials}</div>`;
+    const long = (r.bio || "").length > 200;
+    return `<div class="spk${long ? " long" : ""}"${long ? ` onclick="this.classList.toggle('open')"` : ""}>${av}<div><h3>${esc(r.name)}</h3><div class="role">${esc(r.role)}</div><div class="bio">${esc(r.bio)}</div>${long ? `<div class="more">Read full profile ▾</div>` : ""}</div></div>`;
+  }).join("") : `<p class="empty">Speaker list coming soon.</p>`;
+}
+
+function renderAbstracts(filter=""){
+  const q = filter.toLowerCase();
+  const rows = (DATA.Abstracts || []).filter(r =>
+    !q || (r.title||"").toLowerCase().includes(q) || (r.authors||"").toLowerCase().includes(q) || (r.body||"").toLowerCase().includes(q));
+  document.getElementById("absList").innerHTML = rows.length ? rows.map(r => `
+    <div class="abs${r.body ? " has-body" : ""}"${r.body ? ` onclick="this.classList.toggle('open')"` : ""}>
+      <div class="id">${esc(r.code)}</div><h3>${esc(r.title)}</h3><div class="auth">${esc(r.authors)}</div>
+      ${r.body ? `<div class="abs-body">${esc(r.body)}</div><div class="abs-more">Tap to read full abstract ▾</div>` : ""}
+    </div>`).join("")
+    : `<p class="empty">No abstracts found.</p>`;
+}
+
+function renderInfo(){
+  const rows = DATA.Info || [];
+  document.getElementById("infoList").innerHTML = rows.map(r => `
+    <div class="info-card"><h3>${esc(r.heading)}</h3><p>${esc(r.details)}</p></div>`).join("");
+  const theme = rows.find(r => (r.heading||"").toLowerCase() === "theme");
+  const contact = rows.find(r => (r.heading||"").toLowerCase() === "enquiries");
+  if(theme) document.getElementById("confTheme").textContent = theme.details;
+  if(contact) document.getElementById("confContact").textContent = contact.details;
+  const credit = rows.find(r => (r.heading||"").toLowerCase() === "photo credits");
+  document.getElementById("photoCredit").textContent = credit ? credit.details : "";
+  document.getElementById("lastUpdated").textContent = localStorage.getItem("ap26-updated") || "—";
+}
+
+function renderExecs(){
+  const rows = DATA.Executives || [];
+  document.getElementById("execList").innerHTML = rows.length ? rows.map(r => {
+    const initials = esc(initialsOf(r.name));
+    const av = r.photo
+      ? `<div class="av"><img src="${esc(imgSrc(r.photo))}" alt="${esc(r.name)}" loading="lazy" onerror="this.parentNode.textContent='${initials}'"></div>`
+      : `<div class="av">${initials}</div>`;
+    return `<div class="spk">${av}<div><h3>${esc(r.name)}</h3><div class="role">${esc(r.position)}</div></div></div>`;
+  }).join("") : `<p class="empty">Executive list coming soon.</p>`;
+  const loc = DATA.LOC || [];
+  document.getElementById("locList").innerHTML = loc.length ? loc.map(r => {
+    const initials = esc(initialsOf(r.name));
+    const av = r.photo
+      ? `<div class="av"><img src="${esc(imgSrc(r.photo))}" alt="${esc(r.name)}" loading="lazy" onerror="this.parentNode.textContent='${initials}'"></div>`
+      : `<div class="av">${initials}</div>`;
+    const line2 = r.institution || "";
+    return `<div class="spk">${av}<div><h3>${esc(r.name)}</h3><div class="role">${esc(r.position)}</div>${line2 ? `<div class="bio">${esc(line2)}</div>` : ""}</div></div>`;
+  }).join("") : `<p class="empty">LOC list coming soon.</p>`;
+}
+
+function renderDelegates(filter=""){
+  const q = filter.toLowerCase();
+  const rows = (DATA.Attendees || []).filter(r =>
+    !q || (r.name||"").toLowerCase().includes(q) || (r.institution||"").toLowerCase().includes(q));
+  document.getElementById("delegateList").innerHTML = rows.length ? rows.map(r => {
+    const initials = esc(initialsOf(r.name));
+    return `<div class="spk"><div class="av">${initials}</div><div><h3>${esc(r.name)}</h3><div class="bio">${esc(r.institution)}</div></div></div>`;
+  }).join("") : `<p class="empty">No delegates found.</p>`;
+}
+
+function renderAnnounce(){
+  const rows = DATA.Announcements || [];
+  const bar = document.getElementById("announceBar");
+  const al = document.getElementById("announceLink");
+  if(rows.length){
+    const last = rows[rows.length-1];
+    bar.style.display = "flex";
+    document.getElementById("announceText").textContent = last.title || last.message || "";
+    if(last.link){ al.href = last.link; al.textContent = last.linktext || "Open →"; al.style.display = "inline"; if(String(last.link).startsWith("#")) al.removeAttribute("target"); else al.target = "_blank"; }
+    else al.style.display = "none";
+  } else bar.style.display = "none";
+  document.getElementById("newsList").innerHTML = rows.length ? [...rows].reverse().map(r => `
+    <div class="ann">
+      ${r.date ? `<div class="d8">${esc(r.date)}</div>` : ""}
+      ${r.title ? `<h3>${esc(r.title)}</h3>` : ""}
+      <p>${esc(r.message)}</p>
+      ${r.link ? `<a class="ann-btn" ${linkAttrs(r.link)}>${esc(r.linktext || "Open link")}</a>` : ""}
+    </div>`).join("") : `<p class="empty">No announcements yet — check back during the conference.</p>`;
+}
+
+function renderAddresses(){
+  const rows = (DATA.Addresses || []).filter(r => r.title);
+  document.getElementById("addrList").innerHTML = rows.length ? rows.map(r => {
+    const body = (r.body || "").trim();
+    const isOrder = /order of proceedings/i.test(r.title);
+    const long = body.length > 420 && !isOrder;
+    const initials = esc(initialsOf(r.name));
+    const av = r.photo
+      ? `<div class="av"><img src="${esc(imgSrc(r.photo))}" alt="${esc(r.name)}" loading="lazy" onerror="this.parentNode.textContent='${initials}'"></div>`
+      : (r.name ? `<div class="av">${initials}</div>` : "");
+    const head = r.name
+      ? `<div class="addr-kicker">${esc(r.title)}</div><div class="addr-head">${av}<div><h3>${esc(r.name)}</h3>${r.position ? `<div class="role">${esc(r.position)}</div>` : ""}</div></div>`
+      : `<div class="addr-head"><div><h3>${esc(r.title)}</h3>${r.position ? `<div class="role">${esc(r.position)}</div>` : ""}</div></div>`;
+    const orderHtml = () => {
+      const lines = body.split(/\n/).map(l => l.trim()).filter(Boolean);
+      const intro = lines.filter(l => !/^\d+[.)]\s/.test(l)), steps = lines.filter(l => /^\d+[.)]\s/.test(l));
+      return `<p class="order-intro">${intro.map(esc).join("<br>")}</p><ol class="order-list">${steps.map(l => `<li>${esc(l.replace(/^\d+[.)]\s*/, ""))}</li>`).join("")}</ol>`;
+    };
+    const content = isOrder && body ? orderHtml() : body
+      ? `<div class="addr-body">${esc(body)}</div><button class="addr-more" onclick="const c=this.closest('.addr');c.classList.toggle('open');this.textContent=c.classList.contains('open')?'Show less ▴':'Read full address ▾'">Read full address ▾</button>`
+      : `<p class="addr-soon">This will be published here soon.</p>`;
+    return `<div class="addr${long ? " long" : ""}${isOrder ? " order" : ""}">${head}${content}</div>`;
+  }).join("") : `<p class="empty">Addresses will be published here.</p>`;
+}
+
+function linkAttrs(u){ return String(u||"").startsWith("#") ? `href="${esc(u)}"` : `href="${esc(u)}" target="_blank" rel="noopener"`; }
+
+function renderWorkshop(){
+  const rows = (DATA.Workshop || []).filter(r => r.heading || r.details || r.image);
+  const title = rows.find(r => /^(workshop|title)$/i.test((r.heading||"").trim()));
+  const ctas = rows.filter(r => r.link && r !== title);
+  const pics = rows.filter(r => r.image && !r.link);
+  const facts = rows.filter(r => r !== title && !r.link && !r.image && r.details);
+  const facil = (DATA.Speakers || []).filter(r => /workshop/i.test(r.role || ""));
+  const sessions = (DATA.Agenda || []).filter(r => /workshop/i.test(r.category || ""));
+  let h = "";
+  if(title) h += `<h2 class="ws-title">${esc(title.details)}</h2>`;
+  ctas.forEach(r => { h += `<a class="ws-cta" ${linkAttrs(r.link)}>${esc(r.linktext || r.heading || "Open")}</a>${r.details ? `<p class="ws-cta-note">${esc(r.details)}</p>` : ""}`; });
+  if(facts.length) h += `<dl class="facts">${facts.map(r => `<div><dt>${esc(r.heading)}</dt><dd>${esc(r.details)}</dd></div>`).join("")}</dl>`;
+  if(facil.length){
+    h += `<h3 class="group-h">Facilitators</h3>` + facil.map(r => {
+      const i = esc(initialsOf(r.name));
+      const av = r.photo ? `<div class="av"><img src="${esc(imgSrc(r.photo))}" alt="${esc(r.name)}" loading="lazy" onerror="this.parentNode.textContent='${i}'"></div>` : `<div class="av">${i}</div>`;
+      return `<div class="spk">${av}<div><h3>${esc(r.name)}</h3><div class="role">${esc((r.role||"").replace(/^workshop facilitator\s*[—-]\s*/i,""))}</div><div class="bio">${esc(r.bio)}</div></div></div>`;
+    }).join("");
+  }
+  if(sessions.length){
+    h += `<h3 class="group-h">Schedule</h3>` + sessions.map(r => `
+      <div class="sess">${r.time ? `<div class="time">${esc(r.day)} · ${esc(r.time)}</div>` : ""}<h3>${esc(((r.title||"").match(/day\s*\d+/i) || [r.title])[0])}</h3>${r.venue ? `<div class="where">📍 ${esc(r.venue)}</div>` : ""}</div>`).join("");
+  }
+  pics.forEach(r => {
+    const src = esc(imgSrc(r.image));
+    h += `<h3 class="group-h">${esc(r.heading || "Flyer")}</h3><img class="flyer" src="${src}" alt="${esc(r.heading || "Workshop flyer")}" loading="lazy" onclick="openLB(this.src)" onerror="this.style.display='none'"><p class="flyer-note">Tap to enlarge</p>`;
+  });
+  document.getElementById("wsBox").innerHTML = h || `<p class="empty">Workshop details will be published here.</p>`;
+}
+
+function renderSponsorPage(){
+  const rows = (DATA.Sponsors || []).filter(r => r.name);
+  const box = document.getElementById("sponsorPage");
+  if(!rows.length){
+    const contact = (DATA.Info || []).find(r => (r.heading||"").toLowerCase() === "enquiries");
+    box.innerHTML = `<div class="sp-empty"><h3>Our sponsors will be listed here</h3><p>Interested in sponsoring APSON Bauchi 2026?${contact ? `<br>Contact ${esc(contact.details)}` : ""}</p></div>`;
+    return;
+  }
+  const tiers = [...new Set(rows.map(r => (r.tier||"").trim()))];
+  box.innerHTML = tiers.map(t => (t ? `<h3 class="group-h">${esc(t)}</h3>` : "") + rows.filter(r => (r.tier||"").trim() === t).map(r => `
+    <div class="sp-card">
+      <div class="sp-head">${r.logo ? `<img class="sp-logo" src="${esc(imgSrc(r.logo))}" alt="${esc(r.name)} logo" loading="lazy" onerror="this.style.display='none'">` : ""}<div><h3>${esc(r.name)}</h3></div></div>
+      ${r.description ? `<div class="sp-desc">${esc(r.description)}</div>` : ""}
+      ${r.flyer ? `<img class="sp-flyer" src="${esc(imgSrc(r.flyer))}" alt="${esc(r.name)} flyer" loading="lazy" onclick="openLB(this.src)" onerror="this.style.display='none'">` : ""}
+      ${r.link ? `<a class="sp-link" ${linkAttrs(r.link)}>${esc(r.linktext || "Visit website")}</a>` : ""}
+    </div>`).join("")).join("");
+}
+
+function renderAll(){ renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
+
+/* ---------- Tabs ---------- */
+function showTab(name){
+  const b = document.querySelector(`.tabs button[data-p="${name}"]`); if(!b) return false;
+  document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x===b));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-"+name));
+  b.scrollIntoView({block:"nearest", inline:"center"});
+  window.scrollTo({top: document.getElementById("tabs").offsetTop, behavior:"smooth"});
+  return true;
+}
+document.getElementById("tabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if(b) showTab(b.dataset.p);
+});
+/* Links like #workshop (from the Sheet) open that tab instead of a new page */
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#"]'); if(!a) return;
+  const name = a.getAttribute("href").slice(1).toLowerCase();
+  if(name && showTab(name)) e.preventDefault();
+});
+document.getElementById("absSearch").addEventListener("input", e => renderAbstracts(e.target.value));
+document.getElementById("agSearch").addEventListener("input", () => renderAgenda());
+document.getElementById("delSearch").addEventListener("input", e => renderDelegates(e.target.value));
+
+/* ---------- Sponsor slideshow ---------- */
+let spTimer = null, spCur = 0;
+function renderSponsors(){
+  const rows = DATA.SponsorBar || [];
+  const track = document.getElementById("spTrack");
+  const dotsBox = document.getElementById("spDots");
+  const bar = document.querySelector(".sponsor");
+  if(!rows.length){ bar.style.display = "none"; document.body.style.paddingBottom = "16px"; return; }
+  bar.style.display = ""; document.body.style.paddingBottom = "";
+  const labelRow = rows.find(r => r.label && String(r.label).trim());
+  if(labelRow) document.querySelector(".sp-label").textContent = labelRow.label;
+  track.innerHTML = rows.map((r,i) => `
+    <div class="slide${i===0?" on":""}">
+      <div class="t">${esc(r.title)}</div>
+      ${r.message ? `<div class="d">${esc(r.message)}</div>` : ""}
+      ${r.link ? `<div class="sp-btns"><a class="sp-btn" ${linkAttrs(r.link)}>${esc(r.buttontext || "Learn more")}</a></div>` : ""}
+    </div>`).join("");
+  dotsBox.innerHTML = "";
+  const slides = [...track.children];
+  slides.forEach((_,i) => { const d = document.createElement("span"); if(i===0) d.className="on"; d.onclick = () => spGo(i,true); dotsBox.appendChild(d); });
+  spCur = 0;
+  clearInterval(spTimer);
+  if(slides.length > 1) spTimer = setInterval(() => spGo(spCur+1), 6000);
+}
+function spGo(i, manual){
+  const slides = [...document.getElementById("spTrack").children];
+  const dots = [...document.getElementById("spDots").children];
+  if(!slides.length) return;
+  spCur = (i + slides.length) % slides.length;
+  slides.forEach((s,k) => s.classList.toggle("on", k===spCur));
+  dots.forEach((d,k) => d.classList.toggle("on", k===spCur));
+  if(manual){ clearInterval(spTimer); spTimer = setInterval(() => spGo(spCur+1), 6000); }
+}
+renderSponsors();
+
+/* ---------- Init ---------- */
+renderAll();
+loadHero();
+refresh();
+/* ---------- Announcement alerts ---------- */
+function annSig(){
+  const rows = DATA.Announcements || [];
+  if(!rows.length) return "";
+  const l = rows[rows.length-1];
+  return (l.title||"") + "|" + (l.message||"");
+}
+function checkNewAnnouncement(){
+  const sig = annSig();
+  const prev = localStorage.getItem("ap26-annsig");
+  localStorage.setItem("ap26-annsig", sig);
+  if(!sig || prev === null || prev === sig) return;   // first run or unchanged: stay quiet
+  const rows = DATA.Announcements || [];
+  const l = rows[rows.length-1];
+  if(navigator.vibrate) navigator.vibrate([200,100,200]);
+  showToast(l.title || "New announcement", l.message || "");
+  if("Notification" in window && Notification.permission === "granted" && "serviceWorker" in navigator){
+    navigator.serviceWorker.ready.then(reg => reg.showNotification(l.title || "Conference announcement", {
+      body: l.message || "", icon: "apson-logo.png", badge: "apson-logo.png", tag: "conf-announcement"
+    })).catch(()=>{});
+  }
+}
+function showToast(title, msg){
+  let t = document.getElementById("toast");
+  if(!t){ t = document.createElement("div"); t.id = "toast"; t.className = "toast"; document.body.appendChild(t); }
+  t.innerHTML = "<b>📢 " + title.replace(/</g,"&lt;") + "</b>" + msg.replace(/</g,"&lt;");
+  t.classList.add("on");
+  clearTimeout(showToast._h);
+  showToast._h = setTimeout(() => t.classList.remove("on"), 7000);
+}
+(function initNotifBtn(){
+  const b = document.getElementById("notifBtn");
+  if(!("Notification" in window) || Notification.permission !== "default") return; // unsupported or already decided
+  b.style.display = "block";
+  b.onclick = () => Notification.requestPermission().then(p => { if(p !== "default") b.style.display = "none"; });
+})();
+if(localStorage.getItem("ap26-annsig") === null) localStorage.setItem("ap26-annsig", annSig());
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(reg => {
+    reg.update();
+    reg.addEventListener("updatefound", () => {
+      const nw = reg.installing;
+      if(nw) nw.addEventListener("statechange", () => {
+        if(nw.state === "installed" && navigator.serviceWorker.controller) location.reload();
+      });
+    });
+  }).catch(()=>{});
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if(!reloaded){ reloaded = true; location.reload(); } });
+}
+</script>
+</body>
+</html>
