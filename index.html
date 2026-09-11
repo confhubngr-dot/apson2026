@@ -133,6 +133,27 @@
   .order-list li{counter-increment:step;position:relative;padding:8px 0 8px 38px;border-top:1px solid var(--line);font-size:.88rem;line-height:1.45}
   .order-list li::before{content:counter(step);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center}
 
+  /* ---------- Live ---------- */
+  .live-strip{display:none;align-items:center;gap:9px;background:var(--red);color:#fff;padding:9px 14px;font-size:.84rem;font-weight:700;cursor:pointer}
+  .live-strip.on{display:flex}
+  .live-strip .go{margin-left:auto;background:#fff;color:var(--red);font-size:.72rem;font-weight:800;padding:4px 12px;border-radius:999px;white-space:nowrap}
+  .dot{width:9px;height:9px;border-radius:50%;background:#fff;flex-shrink:0;animation:pulse 1.4s infinite}
+  .tabs button .dot{display:inline-block;background:var(--red);margin-right:6px;vertical-align:1px}
+  @keyframes pulse{50%{opacity:.25}}
+  @media (prefers-reduced-motion:reduce){.dot{animation:none}}
+  .player{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin-bottom:8px}
+  .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .now-title{font-size:1rem;margin:4px 0 2px}
+  .now-meta{font-size:.78rem;color:var(--slate);margin-bottom:8px}
+  .watch-btn{display:inline-block;background:var(--red);color:#fff;font-size:.8rem;font-weight:800;padding:8px 16px;border-radius:999px;margin-bottom:16px}
+  .ls-row{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+  .ls-row h3{font-size:.9rem}
+  .ls-row .when{font-size:.74rem;color:var(--brand-2);font-weight:700}
+  .ls-row .note{font-size:.76rem;color:var(--slate)}
+  .ls-row a{margin-left:auto;flex-shrink:0;font-size:.74rem;font-weight:800;color:var(--brand);border:1.5px solid var(--brand);padding:5px 12px;border-radius:999px;white-space:nowrap}
+  .ls-row.is-live{border-color:var(--red)}
+  .ls-row.is-live a{background:var(--red);border-color:var(--red);color:#fff}
+
   /* ---------- Workshop ---------- */
   .ws-title{font-size:1.12rem;line-height:1.35;color:var(--brand);margin:2px 0 12px}
   .ws-cta{display:block;text-align:center;background:var(--brand);color:#fff;font-weight:800;font-size:.92rem;padding:13px;border-radius:12px;margin-bottom:6px}
@@ -228,8 +249,11 @@
   <span class="tag">NEW</span><span id="announceText"></span><a id="announceLink" href="#" target="_blank" rel="noopener" style="display:none;font-weight:800;color:var(--brand-2);white-space:nowrap;margin-left:auto">Open →</a>
 </div>
 
+<div class="live-strip" id="liveStrip" onclick="showTab('live')"><span class="dot"></span><span id="liveStripText">Live now</span><span class="go">Watch</span></div>
+
 <nav class="tabs" id="tabs">
   <button data-p="home" class="on">Home</button>
+  <button data-p="live">Live</button>
   <button data-p="agenda">Programme</button>
   <button data-p="workshop">Workshop</button>
   <button data-p="addresses">Addresses</button>
@@ -262,6 +286,11 @@
     <div class="daybar" id="daybar"></div>
     <input class="search" id="agSearch" type="search" placeholder="Search sessions or speakers…">
     <div id="agendaList"></div>
+  </section>
+
+  <section class="panel" id="p-live">
+    <div id="liveNow"></div>
+    <div id="liveList"></div>
   </section>
 
   <section class="panel" id="p-workshop">
@@ -357,6 +386,7 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
    Sponsors:      name | tier | description | logo | flyer | link | linktext   (the Sponsors page)
    Workshop:      heading | details | link | linktext | image   (link row = button, image row = picture)
    Addresses:     title | name | position | photo | body   (empty body = "to be published soon")
+   Livestream:    title | day | time | status | url | note   (status: upcoming / live / ended)
    Images can be a file in the app folder or a Google Drive image link shared "Anyone with the link".
    Links starting with # open an app tab, e.g. #workshop.
 */
@@ -907,6 +937,7 @@ const SAMPLE = {
 "image": "workshop/flyer.jpg"
 }
 ],
+"Livestream": [],
 "Addresses": [
 {
 "title": "Welcome Address by the APSON President",
@@ -930,6 +961,13 @@ const SAMPLE = {
 "body": "Thursday 24th September 2026, 10.30am – 1.00pm\nInternational Conference Centre (ICC), Bauchi\nChairman of the occasion: Prof. Ibrahim Garba\n\n1. National Anthem\n2. Welcome address — Prof. Kefas John Bwala, LOC Chairman\n3. Address by the APSON President — Prof. Roland I. Osuoji\n4. Goodwill messages — Chief Host\n5. Message by the Chairman of the occasion — Prof. Ibrahim Garba\n6. Citation of the keynote speaker — Dr. Aminu M. Umar\n7. Keynote address: What the Theater Doesn't Teach You — Insights from a Career in Surgical Education — Prof. Ben Nwomeh\n8. Message by the Special Guest and declaration of the conference open — His Excellency, Senator Bala Abdulkadir Mohammed CON, Kauran Daulan Usmaniyya, Executive Governor of Bauchi State\n9. National Anthem"
 },
 {
+"title": "Citation of the Keynote Speaker",
+"name": "Prof. Ben Nwomeh",
+"position": "Keynote Speaker · citation read by Dr. Aminu M. Umar",
+"photo": "speakers/nwomeh.jpg",
+"body": ""
+},
+{
 "title": "Appreciation by the LOC",
 "name": "Local Organising Committee",
 "position": "APSON Bauchi 2026",
@@ -940,14 +978,14 @@ const SAMPLE = {
 };
 
 /* ---------- Data loading: Google Sheet (via opensheet.elk.sh) with offline cache ---------- */
-const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Addresses"];
+const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Addresses","Livestream"];
 /* A misspelt or missing tab makes Google return the FIRST tab instead of an error.
    Checking a tab's headings stops the Agenda from turning up under Delegates. */
 const NEED = {Agenda:["day","title"],Speakers:["name","role"],Executives:["name","position"],LOC:["name","institution"],
   Abstracts:["code","title"],Info:["heading","details"],Announcements:["title","message"],Attendees:["name","institution"],
-  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Addresses:["title","body"]};
+  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Addresses:["title","body"],Livestream:["title","status"]};
 const fits = (tab, rows) => rows.length > 0 && NEED[tab].every(k => k in rows[0]);
-let DATA = JSON.parse(localStorage.getItem("ap26-data5") || "null") || SAMPLE;
+let DATA = JSON.parse(localStorage.getItem("ap26-data6") || "null") || SAMPLE;
 
 
 /* ---------- Sheet fetching: Google direct first, relay as backup ---------- */
@@ -993,7 +1031,7 @@ async function refresh(){
     TABS.forEach((t,i) => fresh[t] = Array.isArray(results[i]) ? results[i] : []);
     if(fresh.Agenda.length){
       DATA = fresh;
-      localStorage.setItem("ap26-data5", JSON.stringify(fresh));
+      localStorage.setItem("ap26-data6", JSON.stringify(fresh));
       localStorage.setItem("ap26-updated", new Date().toLocaleString("en-GB", {day:"numeric", month:"short", hour:"2-digit", minute:"2-digit"}));
       renderAll();
       checkNewAnnouncement();
@@ -1238,7 +1276,53 @@ function renderSponsorPage(){
     </div>`).join("")).join("");
 }
 
-function renderAll(){ renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
+/* YouTube / Facebook links -> embeddable player URL (null = just show a button) */
+function embedUrl(u){
+  u = String(u || "").trim();
+  let m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if(m) return `https://www.youtube-nocookie.com/embed/${m[1]}?autoplay=1&playsinline=1&rel=0`;
+  m = u.match(/youtube\.com\/channel\/(UC[A-Za-z0-9_-]{22})/);
+  if(m) return `https://www.youtube-nocookie.com/embed/live_stream?channel=${m[1]}&autoplay=1&playsinline=1`;
+  if(/facebook\.com\/.+\/videos\/|facebook\.com\/watch|fb\.watch\//.test(u))
+    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&show_text=false&autoplay=true`;
+  return null;
+}
+let liveEmbedShown = "";   // stops the 90-second refresh from restarting the video
+function renderLive(){
+  const rows = (DATA.Livestream || []).filter(r => r.title);
+  const st = r => (r.status || "").trim().toLowerCase();
+  const live = rows.filter(r => st(r) === "live" && r.url);
+  const now = live[0];
+  // red strip + tab dot
+  const strip = document.getElementById("liveStrip");
+  strip.classList.toggle("on", !!now);
+  if(now) document.getElementById("liveStripText").textContent = "Live now: " + now.title;
+  const tabBtn = document.querySelector('.tabs button[data-p="live"]');
+  tabBtn.innerHTML = (now ? '<span class="dot"></span>' : "") + "Live";
+  // player (only while the Live tab is open, so it doesn't use data in the background)
+  const box = document.getElementById("liveNow");
+  const tabOpen = document.getElementById("p-live").classList.contains("on");
+  const emb = now && tabOpen ? embedUrl(now.url) : null;
+  const key = now ? now.url + "|" + !!emb : "";
+  if(key !== liveEmbedShown){
+    liveEmbedShown = key;
+    box.innerHTML = now ? `
+      ${emb ? `<div class="player"><iframe src="${esc(emb)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="${esc(now.title)}"></iframe></div>` : ""}
+      <h2 class="now-title">${esc(now.title)}</h2>
+      <p class="now-meta">${[now.day, now.time, now.note].filter(Boolean).map(esc).join(" · ")}</p>
+      <a class="watch-btn" href="${esc(now.url)}" target="_blank" rel="noopener">${/youtu/.test(now.url) ? "Open in YouTube" : /facebook|fb\.watch/.test(now.url) ? "Open in Facebook" : /zoom\.us/.test(now.url) ? "Join on Zoom" : "Watch live"}</a>` : "";
+  }
+  const others = rows.filter(r => r !== now);
+  const btn = r => !r.url ? "" : `<a href="${esc(r.url)}" target="_blank" rel="noopener">${st(r) === "ended" ? "Recording" : /zoom\.us/.test(r.url) ? "Join on Zoom" : st(r) === "live" ? "Watch live" : "Link"}</a>`;
+  document.getElementById("liveList").innerHTML = rows.length
+    ? (others.length ? `<h3 class="group-h">${now ? "Other sessions" : "Streamed sessions"}</h3>` : "") + others.map(r => `
+      <div class="ls-row${st(r) === "live" ? " is-live" : ""}"><div>
+        <div class="when">${[r.day, r.time].filter(Boolean).map(esc).join(" · ")}${st(r) === "upcoming" ? " · coming up" : st(r) === "ended" ? " · ended" : ""}</div>
+        <h3>${esc(r.title)}</h3>${r.note ? `<div class="note">${esc(r.note)}</div>` : ""}</div>${btn(r)}</div>`).join("")
+    : `<p class="empty">Live stream links will appear here during the conference.</p>`;
+}
+
+function renderAll(){ renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
 
 /* ---------- Tabs ---------- */
 function showTab(name){
@@ -1246,6 +1330,7 @@ function showTab(name){
   document.querySelectorAll(".tabs button").forEach(x => x.classList.toggle("on", x===b));
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-"+name));
   b.scrollIntoView({block:"nearest", inline:"center"});
+  if(name === "live" || liveEmbedShown.endsWith("|true")) renderLive();
   window.scrollTo({top: document.getElementById("tabs").offsetTop, behavior:"smooth"});
   return true;
 }
