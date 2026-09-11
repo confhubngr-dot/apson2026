@@ -139,6 +139,17 @@
   .order-list li{counter-increment:step;position:relative;padding:8px 0 8px 38px;border-top:1px solid var(--line);font-size:.88rem;line-height:1.45}
   .order-list li::before{content:counter(step);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center}
 
+  /* ---------- Posters ---------- */
+  .pos{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px}
+  .pos .id{font-size:.68rem;font-weight:800;color:var(--mist)}
+  .pos h3{font-size:.92rem;margin:2px 0}
+  .pos .auth{font-size:.78rem;color:var(--slate)}
+  .pos img{display:block;width:100%;max-height:260px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:8px;margin-top:10px;cursor:zoom-in}
+  .pos .tap{font-size:.7rem;color:var(--mist);text-align:center;margin-top:4px}
+  .pos-body{display:none;font-size:.83rem;color:var(--slate);margin-top:8px;white-space:pre-line;border-top:1px dashed var(--line);padding-top:8px}
+  .pos-more{font-size:.7rem;font-weight:700;color:var(--brand-2);margin-top:6px;background:none;border:none;padding:0;font-family:inherit;cursor:pointer}
+  .pos.open .pos-body{display:block}
+
   /* ---------- Live ---------- */
   .live-strip{display:none;align-items:center;gap:9px;background:var(--red);color:#fff;padding:9px 14px;font-size:.84rem;font-weight:700;cursor:pointer}
   .live-strip.on{display:flex}
@@ -266,6 +277,7 @@
   <button data-p="speakers">Speakers</button>
   <button data-p="execs">Executives &amp; LOC</button>
   <button data-p="abstracts">Abstracts</button>
+  <button data-p="posters">Posters</button>
   <button data-p="info">Venue &amp; Info</button>
   <button data-p="yankari">Yankari</button>
   <button data-p="sponsors">Sponsors</button>
@@ -282,7 +294,7 @@
       <div class="info-card"><h3>📅 Dates</h3><p>Outreach: 18th – 19th<br>Workshop: 22nd – 23rd<br>Conference: 23rd – 26th September 2026</p></div>
       <div class="info-card"><h3>📍 Venue</h3><p>International Conference Centre (ICC), Bauchi — pre-conference workshop at Modular Theatre, ATBUTH</p></div>
       <div class="info-card"><h3>🎯 Theme</h3><p id="confTheme">Advancing Paediatric Surgical Care in Nigeria: Innovation and Best Practices (sub-themes: Paediatric Trauma; Paediatric Surgical Infections)</p></div>
-      <div class="info-card"><h3>☎️ Enquiries</h3><p id="confContact">Prof. Kefas John Bwala, LOC Chairman — 0806 211 2679</p></div>
+      <div class="info-card"><h3>☎️ Enquiries</h3><p id="confContact">Dr. Kefas John Bwala, LOC Chairman — 0806 211 2679</p></div>
     </div>
     <p class="tip">💡 Tip: tap your browser's menu and choose <strong>"Add to Home Screen"</strong> to install this as an app. Once installed it keeps working even with a weak signal inside the venue.</p>
     <button class="notif-btn" id="notifBtn" style="display:none">🔔 Enable announcement alerts</button>
@@ -321,6 +333,11 @@
   <section class="panel" id="p-abstracts">
     <input class="search" id="absSearch" type="search" placeholder="Search abstracts by title or author…">
     <div id="absList"></div>
+  </section>
+
+  <section class="panel" id="p-posters">
+    <input class="search" id="posSearch" placeholder="Search posters…">
+    <div id="posList"></div>
   </section>
 
   <section class="panel" id="p-info">
@@ -391,6 +408,7 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
    SponsorBar:    label | title | message | buttontext | link   (rotating strip at the bottom)
    Sponsors:      name | tier | description | logo | flyer | link | linktext   (the Sponsors page)
    Workshop:      heading | details | link | linktext | image   (link row = button, image row = picture)
+   Posters:       code | title | authors | image | body   (image = poster file or Drive link; tap to enlarge)
    Addresses:     title | name | position | photo | body   (empty body = "to be published soon")
    Livestream:    title | day | time | status | url | note   (status: upcoming / live / ended)
    Gallery:       image | caption | credit | link   (optional — extra banner photos, shown before the built-in ones)
@@ -477,7 +495,7 @@ const SAMPLE = {
 "day": "Thu 24",
 "time": "",
 "title": "Welcome address",
-"speaker": "Prof. Kefas John Bwala, LOC Chairman",
+"speaker": "Dr. Kefas John Bwala, LOC Chairman",
 "venue": "ICC, Bauchi",
 "category": "Ceremony"
 },
@@ -699,8 +717,8 @@ const SAMPLE = {
 },
 {
 "name": "Dr. Ashiru Adamu Abubakar",
-"role": "Guest Lecturer",
-"bio": "Speaking on: 'Nigeria Health Sector Reform — The Journey So Far' (Fri 25).",
+"role": "Guest Lecturer — Federal Ministry of Health and Social Welfare, Abuja",
+"bio": "Technical Assistant to the Coordinating Minister of Health and Social Welfare, and Governance, Coordination and State Engagement Lead, Sector-Wide Approach Coordination Office, Federal Ministry of Health and Social Welfare, Abuja. Speaking on: 'Nigeria Health Sector Reform — The Journey So Far' (Fri 25).",
 "photo": ""
 },
 {
@@ -738,8 +756,8 @@ const SAMPLE = {
 "photo": "executives/fagboya.jpg"
 },
 {
-"name": "Prof. Kefas Bwala",
-"position": "Publicity Secretary",
+"name": "Dr. Kefas Bwala",
+"position": "Publicity Secretary (Associate Professor, ATBUTH Bauchi)",
 "photo": "executives/bwala.jpg"
 },
 {
@@ -765,9 +783,9 @@ const SAMPLE = {
 ],
 "LOC": [
 {
-"name": "Prof. Kefas John Bwala",
+"name": "Dr. Kefas John Bwala",
 "position": "LOC Chairman",
-"institution": "ATBUTH, Bauchi",
+"institution": "Associate Professor of Surgery, ATBUTH, Bauchi",
 "photo": "executives/bwala.jpg"
 },
 {
@@ -785,10 +803,46 @@ const SAMPLE = {
 ],
 "Abstracts": [
 {
-"code": "",
-"title": "Accepted abstracts will be listed here before the conference",
-"authors": "",
-"body": ""
+"code": "SUB-02",
+"title": "Sub-dural Haematoma in an Infant: A Case Report",
+"authors": "Muhammed Murtala Muhammed (presenting), Abdulkadir Adamu Jauro, Mubarak Adamu Muhammad, Olabisi Ogunleye, Nabila Saidu Aliyu — Department of Surgery, Abubakar Tafawa Balewa University / ATBUTH, Bauchi",
+"body": "Introduction: Sub-dural haematoma (SDH) is a serious neurosurgical emergency characterised by a collection of blood within the sub-dural space surrounding the brain. Because the skull is rigid and cannot expand, the SDH compresses and may damage the underlying brain tissue. SDH in children may result from accidental injury or infantile abuse.\n\nCase Presentation: A 6-week-old male infant was brought to the Trauma Centre of ATBUTH Bauchi with head swelling, excessive sleeping and poor suckling of 2 weeks' duration. He was said to have fallen off his mother's back while they were riding on a motorcycle on an unpaved road. He was taken to a nearby clinic, given medications and discharged home, but his symptoms progressed and he was referred to our facility. Brain CT showed a right-sided chronic SDH with compression of the ipsilateral ventricle and midline shift. The parents were counselled for surgery. Burr hole and drainage were done under general anaesthesia, with intra-operative findings of dark, engine-oil-like fluid drained under high pressure. He was stable post-operatively and was subsequently discharged home.\n\nConclusion: SDH can occur in infancy and childhood and should be thoroughly evaluated to rule out causes other than trauma, such as child abuse or coagulopathies.\n\nKeywords: burr hole, chronic sub-dural haematoma, infant."
+},
+{
+"code": "SUB-03",
+"title": "Intussusception with Auto-amputation: A Case Report",
+"authors": "Muhammed Murtala Muhammed (presenting), Abubakar Yau, Kefas John Bwala, Aminu Umar Mohammed, Nabila Saidu Aliyu Gital — Department of Surgery, Abubakar Tafawa Balewa University / ATBUTH, Bauchi",
+"body": "Introduction: Intussusception is the telescoping of a proximal bowel segment into a distal bowel segment. Children often present with colicky abdominal pain, vomiting and passage of red-currant-jelly stools. Abdominal examination often reveals a palpable mass, and ultrasound confirms the diagnosis by the target or pseudo-kidney sign. This case describes the unusual presentation of bowel sphacelation with auto-amputation in a child with intussusception.\n\nCase Presentation: A 9-month-old male infant presented to the Emergency Paediatrics Unit with a one-week history of progressive abdominal distension and inconsolable crying, and a 5-day history of passage of bloody stools. He was resuscitated and investigated, and abdominal ultrasound confirmed intussusception. He had an exploratory laparotomy with intra-operative findings of proximally dilated, healthy bowel sealed off from distal gangrenous bowel, with an oedematous segment surrounding the gangrenous bowel. He had bowel resection and anastomosis.\n\nConclusion: Intussusception is a common cause of intestinal obstruction in children. Abdominal distension with bloody stools should raise suspicion, and ultrasound confirms it. Auto-amputation with auto-anastomosis is a very rare presentation, with only a few published case reports.\n\nKeywords: auto-amputation, auto-anastomosis, intussusception."
+},
+{
+"code": "SUB-29",
+"title": "The Practice of Day-Case Tonsillectomy among Paediatric Patients at Abubakar Tafawa Balewa University Teaching Hospital, Bauchi, Nigeria",
+"authors": "Sulaiman Sani Bara (corresponding), Mohammad Bashir Rabiu, Ibrahim Salim Abdullahi, Mohammad Abubakar Ballah, Isa Bashiru Ibrahim, Mustapha Fatima Mohammed, Yusuf Raiyan Jasawa, Bashir Aliyu Adamu, Hamza Anas Abubakar, Dauda Hassana Gololo, Yunusa Maryam, Hassan Mansur, Usman Hajar, Umar Sani Uba, Gambo Umar, Tanko Safiya, Sani Abdulhakim Aliyu, Babayo Auwal Kwankiyel, Abubakar Bappah Ja'afar — Departments of Anaesthesia and Intensive Care, Emergency Medicine, and Otorhinolaryngology (Head and Neck), ATBUTH, Bauchi",
+"body": "Background: Day-case tonsillectomy is increasingly adopted worldwide because of its safety, cost-effectiveness, reduced hospital stays and potential to improve the efficiency of surgical services. However, its practice remains challenging in many developing countries, including Nigeria, because of concerns about postoperative complications, patient selection and access to adequate perioperative monitoring. This study assessed the practice, safety profile and short-term outcomes of day-case tonsillectomy in paediatric patients at ATBUTH, Bauchi.\n\nMethods: A prospective descriptive study among children aged 5–12 years who underwent day-case tonsillectomy or adenotonsillectomy at ATBUTH between February and December 2025. Data on demographics, indications, anaesthetic technique, postoperative complications, duration of observation and discharge outcomes were collected prospectively and analysed with SPSS version 25 using descriptive statistics.\n\nResults: Seventy paediatric patients were studied; mean age 8.36 ± 2.08 years, 38 (54.3%) male. The major indications were obstructive adenotonsillar disease (60.0%) and recurrent tonsillitis (30.0%). All patients had general anaesthesia with endotracheal intubation. Same-day discharge was achieved in 65 (92.9%), while 5 (7.1%) required unplanned admission. Postoperative complications were minor bleeding in 5 (7.1%) and vomiting in 3 (4.3%). No patient developed major haemorrhage, significant airway compromise or perioperative mortality.\n\nConclusion: Day-case tonsillectomy is safe and feasible for carefully selected paediatric patients at ATBUTH Bauchi, with a high rate of successful same-day discharge and a low incidence of significant postoperative complications. With appropriate patient selection, perioperative monitoring and established discharge criteria, wider adoption could improve surgical service efficiency, reduce bed use and lower costs.\n\nKeywords: tonsillectomy; day-case surgery; paediatrics; adenotonsillectomy; postoperative complications."
+},
+{
+"code": "SUB-51",
+"title": "Case Report on Management of Esophageal Atresia without Fistula in a Sub-urban Tertiary Hospital in Nigeria",
+"authors": "Ogundele I. O. (corresponding), Olatunji O., Orafunam M. E., Akindele O. M., Odeyinka J. E. — Paediatric Surgery Unit, Olabisi Onabanjo University Teaching Hospital, Sagamu; Paediatric Surgery Division and Department of Anaesthesia and Critical Care, Babcock University Teaching Hospital, Ilishan-Remo, Ogun State",
+"body": "Background: Esophageal atresia without fistula (Type A) is an uncommon variant of a rare congenital anomaly. It is characterised by a long gap between the atretic segments, posing an additional challenge at reconstruction. The challenges of management are more pronounced in resource-limited settings such as ours, where patients often present late and outcomes for congenital anomalies in surgical neonates remain poor.\n\nCase Presentation: A 12-day-old term female neonate was referred with excessive salivation, inability to swallow breast milk and failed passage of a nasogastric tube. She had bilateral crepitations in both lung fields. A plain radiograph demonstrated coiling of the nasogastric tube in the upper pouch and a gasless abdomen. Echocardiography revealed an atrial septal defect and patent ductus arteriosus. She was initially discharged against medical advice because of financial constraints. She re-presented much later with worsened malnutrition and aspiration pneumonitis. After resuscitation, cervical oesophagostomy and gastrostomy for feeding were carried out at 22 days of life. At 19 months of age, weighing 10 kg and following clearance by a paediatric cardiologist, she had colonic oesophageal replacement. An iso-peristaltic colonic conduit was anastomosed to the remnant cervical oesophagus and distal oesophageal stump through a posterior mediastinal tunnel. Postoperative recovery was uneventful and she remained stable at 3-month follow-up.\n\nConclusion: Reports of colonic interposition for Type A esophageal atresia are uncommon and it is technically challenging. Staged repair with colonic interposition achieved a good short-term outcome in this patient. Longer follow-up is needed to confirm durability.\n\nKeywords: esophageal atresia, long-gap, staged repair, colonic interposition, low-resource setting."
+},
+{
+"code": "SUB-52",
+"title": "Pyogenic Septic Arthritis in Paediatric Patients at the Federal Teaching Hospital Abakaliki, Ebonyi State, South-East Nigeria",
+"authors": "Dr Basil Obi — Department of Surgery, Abubakar Tafawa Balewa University Teaching Hospital, Bauchi",
+"body": "Background: Pyogenic septic arthritis is an orthopaedic emergency in children that can cause joint destruction, growth disturbance, disability and death if treatment is delayed. Early diagnosis, appropriate antibiotics and timely joint drainage are essential. This study evaluated the clinical presentation, treatment and outcomes of paediatric patients with pyogenic septic arthritis at the Federal Teaching Hospital Abakaliki (FETHA), Ebonyi State.\n\nMethods: A retrospective study of children diagnosed with pyogenic septic arthritis at FETHA between January 2005 and December 2015. Data on demographics, duration of symptoms, affected joints, microbiology, treatment, complications, hospital stay and outcomes were reviewed and analysed using frequency distributions, cross-tabulation and Pearson's chi-square test, with significance at P < 0.05.\n\nResults: Forty-four children were identified, representing 83.0% of the 53 patients seen during the study period. Mean age was 5.7 ± 0.73 years, with a female-to-male ratio of 1:1.75. Eight patients (18.2%) had polyarticular disease, involving 52 joints. The knee was most commonly affected (56.0%), followed by the hip (21.2%). Mean duration of symptoms before presentation was 16.1 ± 2.7 days, and 30 patients (68.2%) presented after more than 6 days. Delayed presentation was significantly associated with age (P = 0.042) and health-seeking behaviour (P = 0.036). Staphylococcus aureus was the most frequently isolated organism. Open arthrotomy with antibiotics and immobilisation was performed in 34 patients (77.2%), while 7 (15.9%) had joint aspiration with antibiotics and immobilisation. All patients received intravenous antibiotics for one week followed by oral antibiotics for two weeks. Mean hospital stay was 20.2 days. Forty-two patients (93.2%) recovered, 2 (4.5%) were discharged against medical advice and 1 (2.3%) died from overwhelming sepsis. Anaemia was the commonest complication (50.0%), followed by septic shock and joint stiffness (9.1% each). Anaemia was significantly more frequent among patients presenting after 6 days (64.5% vs 15.4%, P < 0.003).\n\nConclusion: Delayed presentation was common and was associated with increased occurrence of anaemia. Despite this, most patients had favourable outcomes following antibiotic therapy and joint drainage. Early recognition, prompt referral, appropriate antibiotic therapy and timely surgical intervention are essential to reduce complications and improve outcomes.\n\nKeywords: pyogenic septic arthritis; paediatric orthopaedics; delayed presentation; Staphylococcus aureus; treatment outcomes."
+},
+{
+"code": "SUB-65",
+"title": "Case Report: Omental Gangrene Secondary to Gastric Perforation in a Resource-Limited Facility in Northeast Nigeria",
+"authors": "Muhammed Murtala Muhammed (presenting), Abdulkadir Isiaka, Kamal Ahmad Habib — Department of Surgery, Abubakar Tafawa Balewa University / ATBUTH, Bauchi",
+"body": "Background: Omental infarction (gangrene) is a rare cause of acute abdomen that is frequently misdiagnosed because of its non-specific clinical presentation. It commonly results from omental torsion but may also occur secondary to vascular thrombosis, trauma or severe intra-abdominal inflammation. Gastric perforation is a surgical emergency most commonly caused by peptic ulcer disease and is associated with significant morbidity and mortality.\n\nCase Presentation: A 60-year-old woman presented to the Accident and Emergency Unit of Federal Medical Centre Misau with a five-day history of burning epigastric pain radiating to the back, which progressed to generalised abdominal pain three days before presentation. There was associated progressive generalised abdominal distension and vomiting. She was severely dehydrated and in respiratory distress, and abdominal examination revealed features of generalised peritonitis. Following resuscitation, emergency exploratory laparotomy was done, with over 2.5 L of purulent intraperitoneal collection, extensive gangrene of the greater omentum and a single perforation along the lesser curvature of the stomach. She had primary seromuscular repair of the gastric perforation with partial omentectomy. Postoperatively she received intravenous antibiotics, proton pump inhibitors and supportive care. She was discharged home one week later and returned to clinic for suture removal.\n\nConclusion: Secondary omental infarction associated with gastric perforation is an exceptionally rare finding and presents a significant diagnostic challenge, particularly in resource-limited settings where advanced imaging is not available. Early surgical intervention remains essential.\n\nKeywords: gastric perforation, omental gangrene, Northeast Nigeria."
+},
+{
+"code": "SUB-66",
+"title": "Effect of Therapeutic Play on Perioperative Stress in Children during an International Collaborative Outreach in Nigeria: A Randomised Controlled Trial",
+"authors": "Ogundele Ibukunolu O. (corresponding), Haitham Dagash, Davda Chandni, Amosu Lukmon O., Shotayo Oluwakemi A., Ballard Emma C., Ogundele Oluwabukola I., Henderson Lucy — Olabisi Onabanjo University Teaching Hospital, Sagamu; Leicester Children's Hospital, University Hospitals of Leicester, England; Babcock University Teaching Hospital, Ilishan-Remo",
+"body": "Background: Surgery and hospitalisation cause considerable anxiety and distress in children. Therapeutic play, as a non-pharmacological intervention, may help them cope better. We evaluated the effect of therapeutic play on perioperative fear and postoperative pain among children undergoing elective surgery.\n\nMethods: This double-blind randomised controlled trial included 108 children undergoing elective surgery at Olabisi Onabanjo University Teaching Hospital, Sagamu. Participants were randomised to receive either therapeutic play in addition to standard care, or standard care alone. Therapeutic play was administered by 2 trained healthcare play specialists for 30 to 45 minutes before induction of anaesthesia. Anxiety was assessed at different perioperative time points using the Children's Fear Scale, and postoperative pain using the Wong–Baker Faces Pain Scale. Heart rate, peripheral oxygen saturation and parental satisfaction were also assessed. Data were analysed using SPSS version 26, with significance set at p < 0.05.\n\nResults: 108 children were enrolled, 59 in the control group and 49 in the intervention group. The groups were comparable in baseline socio-demographic and clinical characteristics. Baseline fear levels did not differ significantly (chi-square = 6.707, p = 0.152). However, the intervention group had significantly more favourable fear profiles before separation from parents (chi-square = 14.873, p = 0.005) and inside the operating suite (chi-square = 18.267, p = 0.001). No significant differences in fear were observed immediately after surgery or two hours postoperatively. Heart rate and peripheral oxygen saturation were comparable between groups. Postoperative pain scores were comparable immediately after surgery and at 30 minutes, but were significantly lower in the intervention group at two hours postoperatively (0.12 ± 0.48 vs 0.71 ± 1.65; U = 1231, p = 0.028). Parental satisfaction with therapeutic play was high, with 66.0% satisfied and 31.9% very satisfied.\n\nConclusion: Therapeutic play may be a useful adjunct to standard perioperative care for children undergoing elective surgery, particularly during stressful transitional stages.\n\nKeywords: therapeutic play, perioperative anxiety, postoperative pain, children, elective surgery."
 }
 ],
 "Info": [
@@ -798,7 +852,7 @@ const SAMPLE = {
 },
 {
 "heading": "Enquiries",
-"details": "Prof. Kefas John Bwala, LOC Chairman — 0806 211 2679"
+"details": "Dr. Kefas John Bwala, LOC Chairman — 0806 211 2679"
 },
 {
 "heading": "Venue",
@@ -838,7 +892,7 @@ const SAMPLE = {
 },
 {
 "heading": "Leadership",
-"details": "Prof. Roland I. Osuoji (APSON President, LASUTH Lagos) | Prof. Lukman O. Abdur-Rahman (APSON Vice President, University of Ilorin) | Prof. Kefas John Bwala (LOC Chairman, ATBUTH Bauchi) | Prof. Auwal Abubakar (LOC Co-Chairman, MAUTH Yola) | Dr. Aminu M. Umar (LOC Secretary, ATBUTH Bauchi)."
+"details": "Prof. Roland I. Osuoji (APSON President, LASUTH Lagos) | Prof. Lukman O. Abdur-Rahman (APSON Vice President, University of Ilorin) | Dr. Kefas John Bwala (Associate Professor, LOC Chairman, ATBUTH Bauchi) | Prof. Auwal Abubakar (LOC Co-Chairman, MAUTH Yola) | Dr. Aminu M. Umar (LOC Secretary, ATBUTH Bauchi)."
 },
 {
 "heading": "APSON Online",
@@ -944,6 +998,7 @@ const SAMPLE = {
 "image": "workshop/flyer.jpg"
 }
 ],
+"Posters": [],
 "Livestream": [],
 "Addresses": [
 {
@@ -955,8 +1010,8 @@ const SAMPLE = {
 },
 {
 "title": "Welcome Address by the LOC Chairman",
-"name": "Prof. Kefas John Bwala",
-"position": "Chairman, Local Organising Committee — ATBUTH, Bauchi",
+"name": "Dr. Kefas John Bwala",
+"position": "Chairman, Local Organising Committee — Associate Professor, ATBUTH, Bauchi",
 "photo": "executives/bwala.jpg",
 "body": ""
 },
@@ -965,7 +1020,7 @@ const SAMPLE = {
 "name": "",
 "position": "",
 "photo": "",
-"body": "Thursday 24th September 2026, 10.30am – 1.00pm\nInternational Conference Centre (ICC), Bauchi\nChairman of the occasion: Prof. Ibrahim Garba\n\n1. National Anthem\n2. Welcome address — Prof. Kefas John Bwala, LOC Chairman\n3. Address by the APSON President — Prof. Roland I. Osuoji\n4. Goodwill messages — Chief Host\n5. Message by the Chairman of the occasion — Prof. Ibrahim Garba\n6. Citation of the keynote speaker — Dr. Aminu M. Umar\n7. Keynote address: What the Theater Doesn't Teach You — Insights from a Career in Surgical Education — Prof. Ben Nwomeh\n8. Message by the Special Guest and declaration of the conference open — His Excellency, Senator Bala Abdulkadir Mohammed CON, Kauran Daulan Usmaniyya, Executive Governor of Bauchi State\n9. National Anthem"
+"body": "Thursday 24th September 2026, 10.30am – 1.00pm\nInternational Conference Centre (ICC), Bauchi\nChairman of the occasion: Prof. Ibrahim Garba\n\n1. National Anthem\n2. Welcome address — Dr. Kefas John Bwala, LOC Chairman\n3. Address by the APSON President — Prof. Roland I. Osuoji\n4. Goodwill messages — Chief Host\n5. Message by the Chairman of the occasion — Prof. Ibrahim Garba\n6. Citation of the keynote speaker — Dr. Aminu M. Umar\n7. Keynote address: What the Theater Doesn't Teach You — Insights from a Career in Surgical Education — Prof. Ben Nwomeh\n8. Message by the Special Guest and declaration of the conference open — His Excellency, Senator Bala Abdulkadir Mohammed CON, Kauran Daulan Usmaniyya, Executive Governor of Bauchi State\n9. National Anthem"
 },
 {
 "title": "Citation of the Keynote Speaker",
@@ -985,12 +1040,12 @@ const SAMPLE = {
 };
 
 /* ---------- Data loading: Google Sheet (via opensheet.elk.sh) with offline cache ---------- */
-const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Addresses","Livestream","Gallery"];
+const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Posters","Addresses","Livestream","Gallery"];
 /* A misspelt or missing tab makes Google return the FIRST tab instead of an error.
    Checking a tab's headings stops the Agenda from turning up under Delegates. */
 const NEED = {Agenda:["day","title"],Speakers:["name","role"],Executives:["name","position"],LOC:["name","institution"],
   Abstracts:["code","title"],Info:["heading","details"],Announcements:["title","message"],Attendees:["name","institution"],
-  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"]};
+  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Posters:["code","title"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"]};
 const fits = (tab, rows) => rows.length > 0 && NEED[tab].every(k => k in rows[0]);
 let DATA = JSON.parse(localStorage.getItem("ap26-data6") || "null") || SAMPLE;
 
@@ -1192,6 +1247,20 @@ function renderAbstracts(filter=""){
     : `<p class="empty">No abstracts found.</p>`;
 }
 
+function renderPosters(filter=""){
+  const q = filter.toLowerCase();
+  const rows = (DATA.Posters || []).filter(r => (r.title || r.code) &&
+    (!q || (r.title||"").toLowerCase().includes(q) || (r.authors||"").toLowerCase().includes(q) || (r.body||"").toLowerCase().includes(q)));
+  document.getElementById("posList").innerHTML = rows.length ? rows.map(r => `
+    <div class="pos">
+      ${r.code ? `<div class="id">${esc(r.code)}</div>` : ""}<h3>${esc(r.title)}</h3>
+      ${r.authors ? `<div class="auth">${esc(r.authors)}</div>` : ""}
+      ${r.image ? `<img src="${esc(imgSrc(r.image))}" alt="${esc(r.title)}" loading="lazy" onclick="openLB(this.src)" onerror="this.style.display='none';this.nextElementSibling.style.display='none'"><div class="tap">Tap the poster to enlarge</div>` : ""}
+      ${r.body ? `<div class="pos-body">${esc(r.body)}</div><button class="pos-more" onclick="const c=this.closest('.pos');c.classList.toggle('open');this.textContent=c.classList.contains('open')?'Show less ▴':'Read the abstract ▾'">Read the abstract ▾</button>` : ""}
+    </div>`).join("")
+    : `<p class="empty">${filter ? "No posters found." : "Posters will be listed here."}</p>`;
+}
+
 function renderInfo(){
   const rows = DATA.Info || [];
   document.getElementById("infoList").innerHTML = rows.map(r => `
@@ -1376,7 +1445,7 @@ function renderLive(){
     : `<p class="empty">Live stream links will appear here during the conference.</p>`;
 }
 
-function renderAll(){ buildSlideshows(); renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
+function renderAll(){ buildSlideshows(); renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderPosters(document.getElementById("posSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
 
 /* ---------- Tabs ---------- */
 function showTab(name){
@@ -1398,6 +1467,7 @@ document.addEventListener("click", e => {
   if(name && showTab(name)) e.preventDefault();
 });
 document.getElementById("absSearch").addEventListener("input", e => renderAbstracts(e.target.value));
+document.getElementById("posSearch").addEventListener("input", e => renderPosters(e.target.value));
 document.getElementById("agSearch").addEventListener("input", () => renderAgenda());
 document.getElementById("delSearch").addEventListener("input", e => renderDelegates(e.target.value));
 
