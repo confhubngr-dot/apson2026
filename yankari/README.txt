@@ -1,13 +1,13 @@
-Real photos for the app — drop JPGs into this folder with these exact names.
-Any that are missing are simply skipped; the Bauchi illustration stays as a fallback for hero.jpg.
+Banner slideshow (Home and Yankari tabs)
+The banner rotates through photos every 6 seconds. Three freely licensed Wikimedia Commons photos are built in,
+each with its credit on the slide. To add more (e.g. from the LOC or Bauchi State tourism):
 
-  hero.jpg      big banner on Home and the Yankari tab — landscape, about 1600 px wide, under 300 KB
-  elephants.jpg  photo strip on the Yankari tab — about 800 px wide
-  wikki.jpg      photo strip — Wikki Warm Springs
-  safari.jpg     photo strip — game drive / landscape
-  tomb.jpg       photo strip — Tomb of Sir Abubakar Tafawa Balewa
+  1. In the Google Sheet, add a tab named exactly  Gallery
+  2. Row 1 headings:  image | caption | credit | link
+  3. One row per photo. 'image' can be a Google Drive image link shared "Anyone with the link",
+     or a file in this folder (e.g. yankari/elephants-1.jpg — then redeploy and bump the cache in sw.js).
+     'credit' is required unless you own the photo, e.g.  Photo: Bauchi State Tourism Board
+Gallery photos show first, then the built-in ones. Only use photos you have permission to use.
 
-Only use photos you have permission to use (LOC / Bauchi State / your own, or free-licence photos
-from Wikimedia Commons). Put the credits in the Sheet: Info tab, heading "Photo credits",
-e.g.  Photos: Charles Emogor (CC BY-SA 4.0), via Wikimedia Commons
-After adding photos, bump the cache in sw.js (ap26-v6 -> ap26-v7) before deploying.
+The photo strip on the Yankari tab still reads these file names from this folder:
+  elephants.jpg  wikki.jpg  safari.jpg  tomb.jpg   (any that are missing are skipped)

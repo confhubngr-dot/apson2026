@@ -103,6 +103,12 @@
   /* ---------- Bauchi scene ---------- */
   .scene{position:relative;border-radius:14px;overflow:hidden;margin-bottom:14px;background:#f8cf7e;aspect-ratio:12/5}
   .scene img{display:block;width:100%;height:100%;object-fit:cover}
+  .scene img.ph{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+  .scene img.ph.on{opacity:1}
+  .dots{position:absolute;right:10px;top:10px;z-index:2;display:flex;gap:6px}
+  .dots button{width:8px;height:8px;border-radius:50%;border:none;padding:0;background:rgba(255,255,255,.5);cursor:pointer}
+  .dots button.on{background:#fff}
+  @media (prefers-reduced-motion:reduce){.scene img.ph{transition:none}}
   .scene-cap{position:absolute;left:14px;top:10px;color:#5a3417;line-height:1.15}
   .scene-cap b{display:block;font-size:1.35rem;letter-spacing:-.01em}
   .scene-cap span{font-size:.8rem;font-style:italic}
@@ -110,7 +116,7 @@
   .scene.photo .scene-cap{color:#fff;z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.4)}
   .photo-credit{font-size:.66rem;color:var(--mist);margin:-4px 0 12px}
   .photo-credit:empty{display:none}
-  .scene-credit{position:absolute;right:0;bottom:0;z-index:2;font-size:.56rem;white-space:nowrap;max-width:100%;line-height:1.3;padding:3px 8px;border-top-left-radius:8px;background:rgba(0,0,0,.45);color:#fff}
+  .scene-credit{position:absolute;right:0;bottom:0;z-index:2;font-size:.56rem;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;line-height:1.3;padding:3px 8px;border-top-left-radius:8px;background:rgba(0,0,0,.45);color:#fff}
   .scene-credit:empty{display:none}
   .scene-credit a{color:#fff;text-decoration:underline}
 
@@ -269,7 +275,7 @@
 
 <main>
   <section class="panel on" id="p-home">
-    <div class="scene"><img alt="Yankari Game Reserve, Bauchi State"><div class="scene-cap"><b>Bauchi</b><span>The Pearl of Tourism</span></div><div class="scene-credit"></div></div>
+    <div class="scene"><img class="base" src="bauchi.svg" alt="Yankari Game Reserve, Bauchi State"><div class="dots"></div><div class="scene-cap"><b>Bauchi</b><span>The Pearl of Tourism</span></div><div class="scene-credit"></div></div>
     <h2 class="welcome-h">Welcome, Delegates</h2>
     <p class="welcome-p">Everything you need for APSON Bauchi 2026 — the live programme, abstract book, venue &amp; travel information, and real-time announcements.</p>
     <div class="card-grid">
@@ -322,7 +328,7 @@
   </section>
 
   <section class="panel" id="p-yankari">
-    <div class="scene"><img alt="Yankari Game Reserve, Bauchi State"><div class="scene-cap"><b>Yankari</b><span>Game Reserve, Bauchi State</span></div><div class="scene-credit"></div></div>
+    <div class="scene"><img class="base" src="bauchi.svg" alt="Yankari Game Reserve, Bauchi State"><div class="dots"></div><div class="scene-cap"><b>Yankari</b><span>Game Reserve, Bauchi State</span></div><div class="scene-credit"></div></div>
     <div class="yk-hero">
       <img src="yankari/elephants.jpg" alt="Elephants at Yankari" loading="lazy" onerror="this.style.display='none'">
       <img src="yankari/wikki.jpg" alt="Wikki Warm Springs" loading="lazy" onerror="this.style.display='none'">
@@ -387,6 +393,7 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
    Workshop:      heading | details | link | linktext | image   (link row = button, image row = picture)
    Addresses:     title | name | position | photo | body   (empty body = "to be published soon")
    Livestream:    title | day | time | status | url | note   (status: upcoming / live / ended)
+   Gallery:       image | caption | credit | link   (optional — extra banner photos, shown before the built-in ones)
    Images can be a file in the app folder or a Google Drive image link shared "Anyone with the link".
    Links starting with # open an app tab, e.g. #workshop.
 */
@@ -978,12 +985,12 @@ const SAMPLE = {
 };
 
 /* ---------- Data loading: Google Sheet (via opensheet.elk.sh) with offline cache ---------- */
-const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Addresses","Livestream"];
+const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Addresses","Livestream","Gallery"];
 /* A misspelt or missing tab makes Google return the FIRST tab instead of an error.
    Checking a tab's headings stops the Agenda from turning up under Delegates. */
 const NEED = {Agenda:["day","title"],Speakers:["name","role"],Executives:["name","position"],LOC:["name","institution"],
   Abstracts:["code","title"],Info:["heading","details"],Announcements:["title","message"],Attendees:["name","institution"],
-  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Addresses:["title","body"],Livestream:["title","status"]};
+  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"]};
 const fits = (tab, rows) => rows.length > 0 && NEED[tab].every(k => k in rows[0]);
 let DATA = JSON.parse(localStorage.getItem("ap26-data6") || "null") || SAMPLE;
 
@@ -1063,34 +1070,81 @@ function imgSrc(u){
 function openLB(src){ document.getElementById("lbImg").src = src; document.getElementById("lb").classList.add("on"); }
 function closeLB(){ document.getElementById("lb").classList.remove("on"); }
 document.addEventListener("keydown", e => { if(e.key === "Escape") closeLB(); });
-/* Banner picture: tries each source in turn and shows the matching photo credit.
-   1) yankari/hero.jpg if the LOC supplies one (credit from the Info row "Photo credits")
-   2) Wikki Warm Spring by Charles Emogor, CC BY-SA 4.0, via Wikimedia Commons (free licence, credit required)
-   3) the built-in Bauchi illustration */
-const WIKKI_CREDIT = {text:"Photo: Charles Emogor · CC BY-SA 4.0 · Wikimedia Commons", link:"https://commons.wikimedia.org/wiki/File:Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg"};
-const HERO = [
-  {src:"yankari/hero.jpg", credit:"sheet"},
-  {src:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg/1280px-Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg", credit:WIKKI_CREDIT},
-  {src:"https://commons.wikimedia.org/wiki/Special:FilePath/Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg?width=960", credit:WIKKI_CREDIT},
-  {src:"bauchi.svg", credit:null}
+/* Banner slideshow. Photos from the Sheet's optional "Gallery" tab (image | caption | credit | link)
+   come first, then these freely licensed Wikimedia Commons photos (credit required, shown on each slide).
+   If no photo loads, the Bauchi illustration underneath stays visible. */
+const DEFAULT_GALLERY = [
+ {
+  "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg/960px-Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg",
+  "fallback": "https://commons.wikimedia.org/wiki/Special:FilePath/Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg?width=960",
+  "caption": "Wikki Warm Spring",
+  "credit": "Charles Emogor · CC BY-SA 4.0",
+  "link": "https://commons.wikimedia.org/wiki/File:Wikki_warm_spring,_YANKARI_Game_Reserve,_Bauchi.jpg"
+ },
+ {
+  "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Wikki_warm_spring_in_Yankari.jpg/960px-Wikki_warm_spring_in_Yankari.jpg",
+  "fallback": "https://commons.wikimedia.org/wiki/Special:FilePath/Wikki_warm_spring_in_Yankari.jpg?width=960",
+  "caption": "Wikki Warm Spring",
+  "credit": "BatureTaraba · CC BY 4.0",
+  "link": "https://commons.wikimedia.org/wiki/File:Wikki_warm_spring_in_Yankari.jpg"
+ },
+ {
+  "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Museum_in_Yankari_Game_Reserve.jpg/960px-Museum_in_Yankari_Game_Reserve.jpg",
+  "fallback": "https://commons.wikimedia.org/wiki/Special:FilePath/Museum_in_Yankari_Game_Reserve.jpg?width=960",
+  "caption": "Yankari museum",
+  "credit": "BatureTaraba · CC BY 4.0",
+  "link": "https://commons.wikimedia.org/wiki/File:Museum_in_Yankari_Game_Reserve.jpg"
+ }
 ];
-function loadHero(){
-  document.querySelectorAll(".scene").forEach(sc => {
-    const img = sc.querySelector("img"), cr = sc.querySelector(".scene-credit");
-    let i = 0;
-    const next = () => {
-      const h = HERO[i++]; if(!h) return;
-      img.onerror = next;
-      img.onload = () => {
-        sc.classList.toggle("photo", !/\.svg$/.test(h.src));
-        let c = h.credit;
-        if(c === "sheet"){ const r = (DATA.Info || []).find(x => (x.heading||"").toLowerCase() === "photo credits"); c = r ? {text:r.details} : null; }
-        cr.innerHTML = c ? (c.link ? `<a href="${c.link}" target="_blank" rel="noopener">${esc(c.text)}</a>` : esc(c.text)) : "";
-      };
-      img.src = h.src;
+function gallerySlides(){
+  const own = (DATA.Gallery || []).filter(r => r.image).map(r => ({image:imgSrc(r.image), caption:r.caption||"", credit:r.credit||"", link:r.link||""}));
+  return own.concat(DEFAULT_GALLERY);
+}
+let galleryKey = "";
+function buildSlideshows(){
+  const slides = gallerySlides();
+  const key = slides.map(x => x.image).join("|");
+  if(key === galleryKey) return;
+  galleryKey = key;
+  document.querySelectorAll(".scene").forEach(sc => setupScene(sc, slides));
+}
+function setupScene(sc, slides){
+  clearInterval(sc._timer);
+  const gen = sc._gen = (sc._gen || 0) + 1;
+  sc.querySelectorAll("img.ph").forEach(e => e.remove());
+  sc.classList.remove("photo");
+  const cr = sc.querySelector(".scene-credit"), dots = sc.querySelector(".dots");
+  cr.innerHTML = ""; dots.innerHTML = "";
+  const ready = []; let cur = -1;
+  const show = k => {
+    cur = k;
+    ready.forEach((r, j) => r.el.classList.toggle("on", j === k));
+    sc.classList.add("photo");
+    const x = ready[k].s, text = [x.caption, x.credit].filter(Boolean).join(" — ");
+    cr.innerHTML = !text ? "" : x.link ? `<a href="${esc(x.link)}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
+    dots.innerHTML = ready.length > 1 ? ready.map((_, j) => `<button class="${j === k ? "on" : ""}" data-k="${j}" aria-label="Photo ${j + 1}"></button>`).join("") : "";
+  };
+  const load = i => {
+    if(i >= slides.length || sc._gen !== gen) return;
+    const x = slides[i], el = new Image();
+    let triedFallback = false;
+    el.className = "ph"; el.alt = x.caption || "Yankari Game Reserve, Bauchi State"; el.decoding = "async";
+    el.onload = () => {
+      if(sc._gen !== gen) return;
+      sc.insertBefore(el, sc.querySelector(".dots"));
+      ready.push({el, s:x});
+      if(cur < 0) requestAnimationFrame(() => show(0)); else show(cur);
+      load(i + 1);
     };
-    next();
-  });
+    el.onerror = () => { if(x.fallback && !triedFallback){ triedFallback = true; el.src = x.fallback; } else load(i + 1); };
+    el.src = x.image;
+  };
+  load(0);
+  dots.onclick = e => { const b = e.target.closest("button"); if(b) show(+b.dataset.k); };
+  sc._timer = setInterval(() => {
+    if(document.hidden || ready.length < 2 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    show((cur + 1) % ready.length);
+  }, 6000);
 }
 let currentDay = null;
 
@@ -1322,7 +1376,7 @@ function renderLive(){
     : `<p class="empty">Live stream links will appear here during the conference.</p>`;
 }
 
-function renderAll(){ renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
+function renderAll(){ buildSlideshows(); renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
 
 /* ---------- Tabs ---------- */
 function showTab(name){
@@ -1384,7 +1438,6 @@ renderSponsors();
 
 /* ---------- Init ---------- */
 renderAll();
-loadHero();
 refresh();
 /* ---------- Announcement alerts ---------- */
 function annSig(){
