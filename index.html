@@ -75,6 +75,7 @@
   .search:focus{outline:none;border-color:var(--brand-2)}
   .abs{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px}
   .abs .id{font-size:.68rem;font-weight:800;color:var(--mist)}
+  .abs .sess-tag{font-size:.68rem;font-weight:700;color:var(--brand-2);margin-bottom:2px;line-height:1.3}
   .abs h3{font-size:.92rem;margin:2px 0}
   .abs .auth{font-size:.78rem;color:var(--slate)}
   .abs.has-body{cursor:pointer}
@@ -414,7 +415,7 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
    Speakers:      name | role | bio | photo
    Executives:    name | position | photo
    LOC:           name | position | institution | photo
-   Abstracts:     code | title | authors | body
+   Abstracts:     code | title | authors | body   (optional extra column: session)
    Info:          heading | details      ("Theme" and "Enquiries" rows also fill the Home cards)
    Announcements: date | title | message | link | linktext   (last row shows on Home)
    Attendees:     name | institution     (names only — the Sheet is public)
@@ -428,6 +429,8 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
                   code once before the stream plays. Another Info row headed "Live access message"
                   replaces the wording shown above the box. No code row = the stream is open to all.
    Gallery:       image | caption | credit | link   (optional — extra banner photos, shown before the built-in ones)
+   Settings:      heading | details   (optional, never displayed in the app — holds the live access
+                  code and its message. Rows: "Live access code" and "Live access message".)
    Images can be a file in the app folder or a Google Drive image link shared "Anyone with the link".
    Links starting with # open an app tab, e.g. #workshop.
 */
@@ -1056,12 +1059,12 @@ const SAMPLE = {
 };
 
 /* ---------- Data loading: Google Sheet (via opensheet.elk.sh) with offline cache ---------- */
-const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Posters","Addresses","Livestream","Gallery"];
+const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Posters","Addresses","Livestream","Gallery","Settings"];
 /* A misspelt or missing tab makes Google return the FIRST tab instead of an error.
    Checking a tab's headings stops the Agenda from turning up under Delegates. */
 const NEED = {Agenda:["day","title"],Speakers:["name","role"],Executives:["name","position"],LOC:["name","institution"],
   Abstracts:["code","title"],Info:["heading","details"],Announcements:["title","message"],Attendees:["name","institution"],
-  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Posters:["code","title"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"]};
+  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Posters:["code","title"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"],Settings:["heading","details"]};
 const fits = (tab, rows) => rows.length > 0 && NEED[tab].every(k => k in rows[0]);
 let DATA = JSON.parse(localStorage.getItem("ap26-data6") || "null") || SAMPLE;
 
@@ -1254,9 +1257,11 @@ function renderSpeakers(){
 function renderAbstracts(filter=""){
   const q = filter.toLowerCase();
   const rows = (DATA.Abstracts || []).filter(r =>
-    !q || (r.title||"").toLowerCase().includes(q) || (r.authors||"").toLowerCase().includes(q) || (r.body||"").toLowerCase().includes(q));
+    !q || (r.title||"").toLowerCase().includes(q) || (r.authors||"").toLowerCase().includes(q)
+       || (r.body||"").toLowerCase().includes(q) || (r.session||"").toLowerCase().includes(q));
   document.getElementById("absList").innerHTML = rows.length ? rows.map(r => `
     <div class="abs${r.body ? " has-body" : ""}"${r.body ? ` onclick="this.classList.toggle('open')"` : ""}>
+      ${r.session ? `<div class="sess-tag">${esc(r.session)}</div>` : ""}
       <div class="id">${esc(r.code)}</div><h3>${esc(r.title)}</h3><div class="auth">${esc(r.authors)}</div>
       ${r.body ? `<div class="abs-body">${esc(r.body)}</div><div class="abs-more">Tap to read full abstract ▾</div>` : ""}
     </div>`).join("")
@@ -1277,9 +1282,10 @@ function renderPosters(filter=""){
     : `<p class="empty">${filter ? "No posters found." : "Posters will be listed here."}</p>`;
 }
 
+const HIDDEN_INFO = /^(live access|photo credits)/i;
 function renderInfo(){
   const rows = DATA.Info || [];
-  document.getElementById("infoList").innerHTML = rows.map(r => `
+  document.getElementById("infoList").innerHTML = rows.filter(r => !HIDDEN_INFO.test(r.heading || "")).map(r => `
     <div class="info-card"><h3>${esc(r.heading)}</h3><p>${esc(r.details)}</p></div>`).join("");
   const theme = rows.find(r => (r.heading||"").toLowerCase() === "theme");
   const contact = rows.find(r => (r.heading||"").toLowerCase() === "enquiries");
@@ -1433,7 +1439,14 @@ let liveEmbedShown = "";   // stops the 90-second refresh from restarting the vi
    phone, so they only do it once — and if the LOC changes the code in the Sheet,
    the stored one stops matching and everyone is asked again. */
 const tidyCode = v => String(v || "").replace(/\s+/g, "").toUpperCase();
-function liveCode(){ return tidyCode((DATA.Info || []).find(r => (r.heading||"").toLowerCase() === "live access code")?.details); }
+function setting(name){
+  const want = name.toLowerCase();
+  const hit = r => (r.heading || "").trim().toLowerCase() === want;
+  /* Settings is a hidden tab: nothing on it is ever displayed. Info is still read as a
+     fallback so an existing sheet keeps working. */
+  return ((DATA.Settings || []).find(hit) || (DATA.Info || []).find(hit) || {}).details;
+}
+function liveCode(){ return tidyCode(setting("live access code")); }
 function liveUnlocked(){ const c = liveCode(); return !c || tidyCode(localStorage.getItem("ap26-live-key")) === c; }
 function submitCode(){
   const box = document.getElementById("gateInput"), err = document.getElementById("gateErr");
@@ -1486,12 +1499,12 @@ function renderLive(){
 }
 
 function gateHtml(now){
-  const msg = (DATA.Info || []).find(r => (r.heading||"").toLowerCase() === "live access message");
+  const msg = setting("live access message");
   return `<div class="gate">
     <div class="pad">🔒</div>
     ${now ? `<p class="gate-ok">● Live now: ${esc(now.title)}</p>` : ""}
     <h2>Enter your access code to watch</h2>
-    <p>${esc(msg ? msg.details : "The live stream is for registered delegates. Please contact the LOC or the registration desk for the access code.")}</p>
+    <p>${esc(msg || "The live stream is for registered delegates. Please contact the LOC or the registration desk for the access code.")}</p>
     <div class="gate-form">
       <input id="gateInput" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
              spellcheck="false" placeholder="Access code" aria-label="Access code"
