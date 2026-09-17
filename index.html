@@ -171,6 +171,19 @@
   .ls-row.is-live{border-color:var(--red)}
   .ls-row.is-live a{background:var(--red);border-color:var(--red);color:#fff}
 
+  /* ---------- Live access gate ---------- */
+  .gate{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 16px;text-align:center;margin-bottom:16px}
+  .gate .pad{width:46px;height:46px;border-radius:50%;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 10px}
+  .gate h2{font-size:1rem;color:var(--ink);margin-bottom:6px}
+  .gate p{font-size:.85rem;color:var(--slate);line-height:1.5;max-width:30em;margin:0 auto 14px;white-space:pre-line}
+  .gate-form{display:flex;gap:8px;max-width:22em;margin:0 auto}
+  .gate-form input{flex:1;min-width:0;font:inherit;font-size:.95rem;text-align:center;letter-spacing:.06em;text-transform:uppercase;padding:11px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .gate-form input:focus{outline:none;border-color:var(--brand)}
+  .gate-form button{background:var(--brand);color:#fff;font-weight:800;font-size:.86rem;border:none;border-radius:10px;padding:0 18px;cursor:pointer}
+  .gate-err{font-size:.8rem;color:var(--red);margin-top:10px;min-height:1.1em}
+  .gate-ok{font-size:.78rem;color:var(--brand-2);font-weight:700;margin-bottom:10px}
+  .locked-note{font-size:.72rem;color:var(--mist);margin-left:auto;flex-shrink:0;white-space:nowrap}
+
   /* ---------- Workshop ---------- */
   .ws-title{font-size:1.12rem;line-height:1.35;color:var(--brand);margin:2px 0 12px}
   .ws-cta{display:block;text-align:center;background:var(--brand);color:#fff;font-weight:800;font-size:.92rem;padding:13px;border-radius:12px;margin-bottom:6px}
@@ -186,7 +199,7 @@
   /* ---------- Sponsors page ---------- */
   .sp-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
   .sp-head{display:flex;gap:12px;align-items:center}
-  .sp-logo{width:64px;height:64px;border-radius:10px;border:1px solid var(--line);background:#fff;object-fit:contain;padding:4px;flex-shrink:0}
+  .sp-logo{width:68px;height:68px;border-radius:10px;background:#fff;object-fit:contain;flex-shrink:0}
   .sp-head h3{font-size:1rem}
   .sp-desc{font-size:.85rem;color:var(--slate);margin-top:8px;white-space:pre-line}
   .sp-flyer{display:block;width:100%;height:auto;border-radius:10px;margin-top:10px;cursor:zoom-in;border:1px solid var(--line)}
@@ -411,6 +424,9 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
    Posters:       code | title | authors | image | body   (image = poster file or Drive link; tap to enlarge)
    Addresses:     title | name | position | photo | body   (empty body = "to be published soon")
    Livestream:    title | day | time | status | url | note   (status: upcoming / live / ended)
+   Live access:   optional. Add an Info row headed "Live access code" and delegates must type that
+                  code once before the stream plays. Another Info row headed "Live access message"
+                  replaces the wording shown above the box. No code row = the stream is open to all.
    Gallery:       image | caption | credit | link   (optional — extra banner photos, shown before the built-in ones)
    Images can be a file in the app folder or a Google Drive image link shared "Anyone with the link".
    Links starting with # open an app tab, e.g. #workshop.
@@ -1404,18 +1420,41 @@ function embedUrl(u){
   u = String(u || "").trim();
   let m = u.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|live\/|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   if(m) return `https://www.youtube-nocookie.com/embed/${m[1]}?autoplay=1&playsinline=1&rel=0`;
-  m = u.match(/youtube\.com\/channel\/(UC[A-Za-z0-9_-]{22})/);
+  m = u.match(/youtube\.com\/channel\/(UC[A-Za-z0-9_-]{22})/) || u.match(/\b(UC[A-Za-z0-9_-]{22})\b/);
   if(m) return `https://www.youtube-nocookie.com/embed/live_stream?channel=${m[1]}&autoplay=1&playsinline=1`;
+  /* A channel handle (youtube.com/@name) has no embeddable form — show the button instead. */
   if(/facebook\.com\/.+\/videos\/|facebook\.com\/watch|fb\.watch\//.test(u))
     return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&show_text=false&autoplay=true`;
   return null;
 }
 let liveEmbedShown = "";   // stops the 90-second refresh from restarting the video
+/* The access code lives in the Sheet (Info tab, heading "Live access code").
+   No code row means the stream is open. The code the delegate typed is kept on their
+   phone, so they only do it once — and if the LOC changes the code in the Sheet,
+   the stored one stops matching and everyone is asked again. */
+const tidyCode = v => String(v || "").replace(/\s+/g, "").toUpperCase();
+function liveCode(){ return tidyCode((DATA.Info || []).find(r => (r.heading||"").toLowerCase() === "live access code")?.details); }
+function liveUnlocked(){ const c = liveCode(); return !c || tidyCode(localStorage.getItem("ap26-live-key")) === c; }
+function submitCode(){
+  const box = document.getElementById("gateInput"), err = document.getElementById("gateErr");
+  const tryIt = tidyCode(box.value);
+  if(!tryIt){ box.focus(); return; }
+  if(tryIt === liveCode()){
+    try { localStorage.setItem("ap26-live-key", tryIt); } catch(e){}
+    liveEmbedShown = "";
+    renderLive();
+  } else {
+    err.textContent = "That code was not recognised. Please check with the registration desk.";
+    box.select();
+  }
+}
+
 function renderLive(){
   const rows = (DATA.Livestream || []).filter(r => r.title);
   const st = r => (r.status || "").trim().toLowerCase();
   const live = rows.filter(r => st(r) === "live" && r.url);
   const now = live[0];
+  const open = liveUnlocked();
   // red strip + tab dot
   const strip = document.getElementById("liveStrip");
   strip.classList.toggle("on", !!now);
@@ -1425,24 +1464,42 @@ function renderLive(){
   // player (only while the Live tab is open, so it doesn't use data in the background)
   const box = document.getElementById("liveNow");
   const tabOpen = document.getElementById("p-live").classList.contains("on");
-  const emb = now && tabOpen ? embedUrl(now.url) : null;
-  const key = now ? now.url + "|" + !!emb : "";
+  const emb = now && tabOpen && open ? embedUrl(now.url) : null;
+  const key = (open ? "u|" : "l|") + (now ? now.url + "|" + !!emb : "");
   if(key !== liveEmbedShown){
     liveEmbedShown = key;
-    box.innerHTML = now ? `
+    box.innerHTML = !open ? gateHtml(now) : now ? `
       ${emb ? `<div class="player"><iframe src="${esc(emb)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="${esc(now.title)}"></iframe></div>` : ""}
       <h2 class="now-title">${esc(now.title)}</h2>
       <p class="now-meta">${[now.day, now.time, now.note].filter(Boolean).map(esc).join(" · ")}</p>
       <a class="watch-btn" href="${esc(now.url)}" target="_blank" rel="noopener">${/youtu/.test(now.url) ? "Open in YouTube" : /facebook|fb\.watch/.test(now.url) ? "Open in Facebook" : /zoom\.us/.test(now.url) ? "Join on Zoom" : "Watch live"}</a>` : "";
   }
   const others = rows.filter(r => r !== now);
-  const btn = r => !r.url ? "" : `<a href="${esc(r.url)}" target="_blank" rel="noopener">${st(r) === "ended" ? "Recording" : /zoom\.us/.test(r.url) ? "Join on Zoom" : st(r) === "live" ? "Watch live" : "Link"}</a>`;
+  const btn = r => !r.url ? "" : !open ? `<span class="locked-note">🔒 code needed</span>`
+    : `<a href="${esc(r.url)}" target="_blank" rel="noopener">${st(r) === "ended" ? "Recording" : /zoom\.us/.test(r.url) ? "Join on Zoom" : st(r) === "live" ? "Watch live" : "Link"}</a>`;
   document.getElementById("liveList").innerHTML = rows.length
     ? (others.length ? `<h3 class="group-h">${now ? "Other sessions" : "Streamed sessions"}</h3>` : "") + others.map(r => `
       <div class="ls-row${st(r) === "live" ? " is-live" : ""}"><div>
         <div class="when">${[r.day, r.time].filter(Boolean).map(esc).join(" · ")}${st(r) === "upcoming" ? " · coming up" : st(r) === "ended" ? " · ended" : ""}</div>
         <h3>${esc(r.title)}</h3>${r.note ? `<div class="note">${esc(r.note)}</div>` : ""}</div>${btn(r)}</div>`).join("")
     : `<p class="empty">Live stream links will appear here during the conference.</p>`;
+}
+
+function gateHtml(now){
+  const msg = (DATA.Info || []).find(r => (r.heading||"").toLowerCase() === "live access message");
+  return `<div class="gate">
+    <div class="pad">🔒</div>
+    ${now ? `<p class="gate-ok">● Live now: ${esc(now.title)}</p>` : ""}
+    <h2>Enter your access code to watch</h2>
+    <p>${esc(msg ? msg.details : "The live stream is for registered delegates. Please contact the LOC or the registration desk for the access code.")}</p>
+    <div class="gate-form">
+      <input id="gateInput" type="text" inputmode="text" autocomplete="off" autocapitalize="characters"
+             spellcheck="false" placeholder="Access code" aria-label="Access code"
+             onkeydown="if(event.key==='Enter')submitCode()">
+      <button type="button" onclick="submitCode()">Unlock</button>
+    </div>
+    <p class="gate-err" id="gateErr"></p>
+  </div>`;
 }
 
 function renderAll(){ buildSlideshows(); renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderPosters(document.getElementById("posSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
