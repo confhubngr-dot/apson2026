@@ -74,45 +74,10 @@
   .search{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font:inherit;font-size:.9rem;margin-bottom:12px;background:#fff}
   .search:focus{outline:none;border-color:var(--brand-2)}
   .abs{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px}
-  .qa-raffle{background:#fffbea;border:1px solid var(--gold);border-radius:10px;padding:12px 14px;
-    margin-bottom:12px;font-size:.84rem;color:#6b5200;line-height:1.5}
-  .qa-raffle b{color:#4a3800}
-  .qa-form{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
-  .qa-form label{display:block;font-size:.78rem;font-weight:700;margin-bottom:5px;color:var(--ink)}
-  .qa-form textarea,.qa-form input,.qa-form select{width:100%;padding:10px 12px;border:1.5px solid var(--line);
-    border-radius:10px;font:inherit;font-size:.9rem;margin-bottom:10px;background:#fff;color:var(--ink)}
-  .qa-form textarea{min-height:86px;resize:vertical}
-  .qa-form textarea:focus,.qa-form input:focus,.qa-form select:focus{outline:none;border-color:var(--brand)}
-  .qa-two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-  @media(max-width:480px){.qa-two{grid-template-columns:1fr}}
-  .qa-send{width:100%;padding:12px;border:none;border-radius:10px;background:var(--brand);color:#fff;
-    font:inherit;font-weight:800;font-size:.92rem;cursor:pointer}
-  .qa-send:disabled{opacity:.55}
-  .qa-msg{margin-top:9px;font-size:.84rem;font-weight:700;text-align:center;min-height:1.1em}
-  .qa-count{text-align:right;font-size:.72rem;color:var(--mist);margin:-6px 0 9px}
-  .qa-hp{position:absolute;left:-9999px}
-  .qa-mine{background:var(--brand-soft);border:1px dashed var(--brand);border-radius:10px;
-    padding:11px 13px;margin-bottom:10px;font-size:.86rem;color:var(--ink)}
-  .qa-mine .tag{display:block;font-size:.68rem;font-weight:800;letter-spacing:.07em;
-    text-transform:uppercase;color:var(--brand);margin-bottom:4px}
-  .qa-q{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 13px;
-    margin-bottom:9px;display:flex;gap:11px;align-items:flex-start}
-  .qa-q.done{opacity:.55}
-  .qa-q .body{flex:1;min-width:0}
-  .qa-q .txt{font-size:.9rem;line-height:1.45}
-  .qa-q .who{font-size:.74rem;color:var(--mist);margin-top:4px}
-  .qa-q .sess{display:inline-block;font-size:.64rem;font-weight:800;letter-spacing:.06em;
-    text-transform:uppercase;background:var(--brand-soft);color:var(--brand);padding:2px 7px;
-    border-radius:999px;margin-bottom:5px}
-  .qa-vote{flex:0 0 46px;border:1.5px solid var(--line);background:#fff;border-radius:10px;
-    padding:6px 0;text-align:center;color:var(--slate);cursor:pointer;font:inherit}
-  .qa-vote.done{background:var(--brand);border-color:var(--brand);color:#fff}
-  .qa-vote .n{display:block;font-weight:800;font-size:.95rem}
-  .qa-vote .c{display:block;font-size:.56rem;letter-spacing:.07em;text-transform:uppercase}
   .abs .id{font-size:.68rem;font-weight:800;color:var(--mist)}
   .abs .sess-tag{font-size:.68rem;font-weight:700;color:var(--brand-2);margin-bottom:2px;line-height:1.3}
   .abs h3{font-size:.92rem;margin:2px 0}
-  .abs .auth{font-size:.78rem;color:var(--slate)}
+  .abs .auth{font-size:.78rem;color:var(--slate);white-space:pre-line}
   .abs.has-body{cursor:pointer}
   .abs-body{display:none;font-size:.83rem;color:var(--slate);margin-top:8px;white-space:pre-line;border-top:1px dashed var(--line);padding-top:8px}
   .abs-more{font-size:.7rem;font-weight:700;color:var(--brand-2);margin-top:6px}
@@ -179,7 +144,7 @@
   .pos{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:10px}
   .pos .id{font-size:.68rem;font-weight:800;color:var(--mist)}
   .pos h3{font-size:.92rem;margin:2px 0}
-  .pos .auth{font-size:.78rem;color:var(--slate)}
+  .pos .auth{font-size:.78rem;color:var(--slate);white-space:pre-line}
   .pos img{display:block;width:100%;max-height:260px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:8px;margin-top:10px;cursor:zoom-in}
   .pos .tap{font-size:.7rem;color:var(--mist);text-align:center;margin-top:4px}
   .pos-body{display:none;font-size:.83rem;color:var(--slate);margin-top:8px;white-space:pre-line;border-top:1px dashed var(--line);padding-top:8px}
@@ -206,6 +171,20 @@
   .ls-row a{margin-left:auto;flex-shrink:0;font-size:.74rem;font-weight:800;color:var(--brand);border:1.5px solid var(--brand);padding:5px 12px;border-radius:999px;white-space:nowrap}
   .ls-row.is-live{border-color:var(--red)}
   .ls-row.is-live a{background:var(--red);border-color:var(--red);color:#fff}
+
+  /* ---------- News ---------- */
+  .news{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:12px}
+  .news .pad{padding:14px}
+  .news .kick{font-size:.7rem;font-weight:800;color:var(--brand-2);text-transform:uppercase;letter-spacing:.03em}
+  .news h3{font-size:1rem;line-height:1.35;margin:4px 0 6px}
+  .news p{font-size:.85rem;color:var(--slate);line-height:1.5;white-space:pre-line}
+  .news img.shot{display:block;width:100%;max-height:220px;object-fit:cover;cursor:zoom-in}
+  .news a.read{display:inline-block;margin-top:10px;background:var(--brand);color:#fff;font-size:.78rem;font-weight:800;padding:8px 16px;border-radius:999px}
+  .news video{display:block;width:100%;background:#000}
+  .vplay{position:relative;background:#000;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .vplay img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75}
+  .vplay span{position:relative;z-index:1;width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1.35rem;padding-left:4px}
+  .vplay em{position:absolute;bottom:8px;left:10px;z-index:1;color:#fff;font-size:.72rem;font-style:normal;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 
   /* ---------- Live access gate ---------- */
   .gate{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 16px;text-align:center;margin-bottom:16px}
@@ -321,7 +300,6 @@
   <button data-p="home" class="on">Home</button>
   <button data-p="live">Live</button>
   <button data-p="agenda">Programme</button>
-  <button data-p="questions">Ask a Question</button>
   <button data-p="workshop">Workshop</button>
   <button data-p="addresses">Addresses</button>
   <button data-p="speakers">Speakers</button>
@@ -330,6 +308,7 @@
   <button data-p="posters">Posters</button>
   <button data-p="info">Venue &amp; Info</button>
   <button data-p="yankari">Yankari</button>
+  <button data-p="press">News</button>
   <button data-p="sponsors">Sponsors</button>
   <button data-p="news">Announcements</button>
   <button data-p="delegates">Delegates</button>
@@ -359,10 +338,6 @@
   <section class="panel" id="p-live">
     <div id="liveNow"></div>
     <div id="liveList"></div>
-  </section>
-
-  <section class="panel" id="p-questions">
-    <div id="qaBox"></div>
   </section>
 
   <section class="panel" id="p-workshop">
@@ -412,6 +387,10 @@
     <div class="info-card"><h3>🚙 The Excursion — Saturday 26th September</h3><p>8.00am – 6.00pm. A guided safari game drive in open-top trucks, a swim at Wikki Warm Springs, time for photos and refreshments at Wikki Camp, and a stop at the Tomb of Sir Abubakar Tafawa Balewa. Yankari is roughly a 1½–2 hour drive from Bauchi town — the LOC will announce departure times and transport.</p></div>
     <div class="info-card"><h3>🏛️ Tomb of Sir Abubakar Tafawa Balewa</h3><p>The resting place of Nigeria's first Prime Minister (1960–66), in Bauchi town — a national monument and one of the state's best-known landmarks.</p></div>
     <div class="info-card"><h3>🎒 What to Bring</h3><p>Comfortable clothing and shoes, hat and sunscreen, swimwear and a towel for the springs, camera or charged phone, and some cash for souvenirs and refreshments.</p></div>
+  </section>
+
+  <section class="panel" id="p-press">
+    <div id="pressList"></div>
   </section>
 
   <section class="panel" id="p-sponsors">
@@ -469,6 +448,8 @@ const SHEET_ID = ((SHEET_LINK.match(/\/d\/([A-Za-z0-9_-]{20,})/) || [])[1] || SH
                   code once before the stream plays. Another Info row headed "Live access message"
                   replaces the wording shown above the box. No code row = the stream is open to all.
    Gallery:       image | caption | credit | link   (optional — extra banner photos, shown before the built-in ones)
+   News:          date | title | source | summary | link | linktext | image | video
+                  (press coverage. video = an .mp4 in the app folder, a Drive link or a YouTube link.)
    Settings:      heading | details   (optional, never displayed in the app — holds the live access
                   code and its message. Rows: "Live access code" and "Live access message".)
    Images can be a file in the app folder or a Google Drive image link shared "Anyone with the link".
@@ -1099,12 +1080,12 @@ const SAMPLE = {
 };
 
 /* ---------- Data loading: Google Sheet (via opensheet.elk.sh) with offline cache ---------- */
-const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Posters","Addresses","Livestream","Gallery","Settings"];
+const TABS = ["Agenda","Speakers","Executives","LOC","Abstracts","Info","Announcements","Attendees","SponsorBar","Sponsors","Workshop","Posters","Addresses","Livestream","Gallery","Settings","News"];
 /* A misspelt or missing tab makes Google return the FIRST tab instead of an error.
    Checking a tab's headings stops the Agenda from turning up under Delegates. */
 const NEED = {Agenda:["day","title"],Speakers:["name","role"],Executives:["name","position"],LOC:["name","institution"],
   Abstracts:["code","title"],Info:["heading","details"],Announcements:["title","message"],Attendees:["name","institution"],
-  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Posters:["code","title"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"],Settings:["heading","details"]};
+  SponsorBar:["title","message"],Sponsors:["name","tier"],Workshop:["heading","details","image"],Posters:["code","title"],Addresses:["title","body"],Livestream:["title","status"],Gallery:["image"],Settings:["heading","details"],News:["title","summary"]};
 const fits = (tab, rows) => rows.length > 0 && NEED[tab].every(k => k in rows[0]);
 let DATA = JSON.parse(localStorage.getItem("ap26-data6") || "null") || SAMPLE;
 
@@ -1443,6 +1424,32 @@ function renderWorkshop(){
   document.getElementById("wsBox").innerHTML = h || `<p class="empty">Workshop details will be published here.</p>`;
 }
 
+function playVideo(el, src){
+  const emb = embedUrl(src);
+  el.outerHTML = emb
+    ? `<div class="player"><iframe src="${esc(emb)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`
+    : `<video controls autoplay playsinline preload="metadata" src="${esc(src)}"></video>`;
+}
+
+function renderNews(){
+  const rows = (DATA.News || []).filter(r => r.title);
+  document.getElementById("pressList").innerHTML = rows.length ? rows.map(r => {
+    const v = (r.video || "").trim(), img = (r.image || "").trim();
+    /* nothing downloads until someone taps play, so opening the tab costs no data */
+    const media = v
+      ? `<div class="vplay" onclick="playVideo(this, '${esc(imgSrc(v)).replace(/'/g, "\\'")}')">
+           ${img ? `<img src="${esc(imgSrc(img))}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+           <span>&#9654;</span><em>Tap to play</em></div>`
+      : img ? `<img class="shot" src="${esc(imgSrc(img))}" alt="${esc(r.title)}" loading="lazy" onclick="openLB(this.src)" onerror="this.remove()">` : "";
+    return `<div class="news">${media}<div class="pad">
+      <div class="kick">${[r.date, r.source].filter(Boolean).map(esc).join(" &middot; ")}</div>
+      <h3>${esc(r.title)}</h3>
+      ${r.summary ? `<p>${esc(r.summary)}</p>` : ""}
+      ${r.link ? `<a class="read" ${linkAttrs(r.link)}>${esc(r.linktext || "Read the full story")}</a>` : ""}
+    </div></div>`;
+  }).join("") : `<p class="empty">Press coverage of the conference will appear here.</p>`;
+}
+
 function renderSponsorPage(){
   const rows = (DATA.Sponsors || []).filter(r => r.name);
   const box = document.getElementById("sponsorPage");
@@ -1555,7 +1562,7 @@ function gateHtml(now){
   </div>`;
 }
 
-function renderAll(){ buildSlideshows(); renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderPosters(document.getElementById("posSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
+function renderAll(){ buildSlideshows(); renderNews(); renderLive(); renderWorkshop(); renderSponsorPage(); renderAddresses(); renderAgenda(); renderSpeakers(); renderAbstracts(document.getElementById("absSearch").value); renderPosters(document.getElementById("posSearch").value); renderInfo(); renderAnnounce(); renderExecs(); renderDelegates(document.getElementById("delSearch").value); renderSponsors(); }
 
 /* ---------- Tabs ---------- */
 function showTab(name){
@@ -1564,7 +1571,6 @@ function showTab(name){
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-"+name));
   b.scrollIntoView({block:"nearest", inline:"center"});
   if(name === "live" || liveEmbedShown.endsWith("|true")) renderLive();
-  if(name === "questions"){ if(!qaDrawn){ qaDrawn = true; qaInit(); } else { qaPoll(); } }
   window.scrollTo({top: document.getElementById("tabs").offsetTop, behavior:"smooth"});
   return true;
 }
@@ -1671,214 +1677,6 @@ if("serviceWorker" in navigator){
   let reloaded = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => { if(!reloaded){ reloaded = true; location.reload(); } });
 }
-
-/* ==================== Audience questions ====================
-   Delegates ask the panel from inside the app. Approved questions
-   appear below; your own sits greyed until the chair shows it.
-   Paste the event's Apps Script /exec URL between the quotes.
-   ============================================================ */
-const QA_API = "https://script.google.com/macros/s/AKfycbyjow71txjPj03sy3UBrOj5c4-3raqF88LZpNHVCPGkQJ2Tshgb3LHdUrl3D0fEQIhvfg/exec";
-
-let qaCfg = null, qaVoted = {}, qaMine = [], qaSession = "", qaTimer = null, qaDrawn = false;
-
-try { qaVoted = JSON.parse(localStorage.getItem("qa_voted") || "{}"); } catch(e){ qaVoted = {}; }
-try { qaMine  = JSON.parse(localStorage.getItem("qa_mine")  || "[]"); } catch(e){ qaMine = []; }
-
-function qaEsc(s){
-  return String(s==null?"":s).replace(/[&<>"]/g, c =>
-    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
-}
-
-async function qaInit(){
-  const box = document.getElementById("qaBox");
-  if (!box) return;
-  if (!QA_API || QA_API.indexOf("PASTE") === 0){
-    box.innerHTML = '<div class="empty">Questions are not set up for this conference yet.</div>';
-    return;
-  }
-  box.innerHTML = '<div class="empty">Loading…</div>';
-  try{
-    const r = await fetch(QA_API + "?action=qaconfig");
-    const c = await r.json();
-    if (!c || !c.ok) throw new Error();
-    qaCfg = c;
-    if (!c.open){
-      box.innerHTML = '<div class="empty">Questions are closed at the moment.<br>' +
-        'The chair will open them when a session begins.</div>';
-      return;
-    }
-    qaDraw();
-    qaPoll();
-    if (qaTimer) clearInterval(qaTimer);
-    qaTimer = setInterval(qaPoll, 20000);
-  } catch(e){
-    box.innerHTML = '<div class="empty">Could not load questions. ' +
-      'Check your connection and try again.</div>';
-  }
-}
-
-function qaDraw(){
-  const sessions = (qaCfg.sessions || []).length
-    ? '<label for="qaSess">Session</label><select id="qaSess">' +
-      '<option value="">Choose the session…</option>' +
-      qaCfg.sessions.map(s => '<option>' + qaEsc(s) + '</option>').join('') + '</select>'
-    : '';
-
-  document.getElementById("qaBox").innerHTML =
-    (qaCfg.raffle ? '<div class="qa-raffle">' + qaEsc(qaCfg.raffle) + '</div>' : '') +
-    '<div class="qa-form">' +
-      sessions +
-      '<label for="qaQ">Your question</label>' +
-      '<textarea id="qaQ" maxlength="500" placeholder="Keep it short and specific…"></textarea>' +
-      '<div class="qa-count" id="qaCount">0 / 500</div>' +
-      '<div class="qa-two">' +
-        '<div><label for="qaName">Your name' +
-          (qaCfg.raffle && qaCfg.raffleNeedsName ? ' — needed to enter the draw' : ' (optional)') +
-          '</label><input id="qaName" autocomplete="name"></div>' +
-        '<div><label for="qaInst">Institution</label><input id="qaInst"></div>' +
-      '</div>' +
-      '<label for="qaEmail">Email' + (qaCfg.raffle ? ' — needed to enter the draw' : ' (optional)') + '</label>' +
-      '<input id="qaEmail" type="email" autocomplete="email" inputmode="email">' +
-      '<input class="qa-hp" id="qaWeb" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-      '<button class="qa-send" id="qaSend">Send my question</button>' +
-      '<p class="qa-msg" id="qaMsg"></p>' +
-    '</div>' +
-    '<div id="qaMine"></div>' +
-    '<div id="qaList"><div class="empty">Loading questions…</div></div>';
-
-  document.getElementById("qaSend").addEventListener("click", qaSubmit);
-  document.getElementById("qaQ").addEventListener("input", function(){
-    document.getElementById("qaCount").textContent = this.value.length + " / 500";
-  });
-  const sel = document.getElementById("qaSess");
-  if (sel) sel.addEventListener("change", function(){ qaSession = this.value; qaPoll(); });
-  qaRenderMine();
-}
-
-function qaRenderMine(){
-  const box = document.getElementById("qaMine");
-  if (!box) return;
-  const pending = qaMine.filter(m => !m.shown);
-  box.innerHTML = pending.map(m =>
-    '<div class="qa-mine"><span class="tag">With the chair</span>' + qaEsc(m.q) +
-    '<div class="note" style="margin-top:6px">Only you can see this. It will appear below once the chair shows it.</div></div>'
-  ).join('');
-}
-
-async function qaPoll(){
-  if (!qaCfg || !qaCfg.open) return;
-  try{
-    const r = await fetch(QA_API + "?action=qalive" +
-      (qaSession ? "&session=" + encodeURIComponent(qaSession) : ""));
-    const d = await r.json();
-    if (d && d.ok) qaRender(d.questions || []);
-  } catch(e){ /* keep whatever is on screen */ }
-}
-
-function qaRender(list){
-  const box = document.getElementById("qaList");
-  if (!box) return;
-
-  // anything of mine now public stops showing as pending
-  let changed = false;
-  qaMine.forEach(m => {
-    if (!m.shown && list.some(q => q.q === m.q)){ m.shown = true; changed = true; }
-  });
-  if (changed){
-    try { localStorage.setItem("qa_mine", JSON.stringify(qaMine.slice(-10))); } catch(e){}
-    qaRenderMine();
-  }
-
-  if (!list.length){
-    box.innerHTML = '<div class="empty">No questions yet — be the first to ask.</div>';
-    return;
-  }
-  box.innerHTML = list.map(q => {
-    const did = !!qaVoted[q.r];
-    const who = [q.n, q.o].filter(Boolean).join(", ");
-    return '<div class="qa-q' + (q.a ? ' done' : '') + '">' +
-      '<button class="qa-vote' + (did ? ' done' : '') + '" data-r="' + q.r + '">' +
-        '<span class="n">' + q.v + '</span><span class="c">' + (did ? 'voted' : 'vote') + '</span></button>' +
-      '<div class="body">' +
-        (q.s ? '<span class="sess">' + qaEsc(q.s) + '</span><br>' : '') +
-        '<div class="txt">' + qaEsc(q.q) + '</div>' +
-        (who || q.a ? '<div class="who">' + qaEsc(who) +
-          (q.a ? (who ? ' · ' : '') + 'answered' : '') + '</div>' : '') +
-      '</div></div>';
-  }).join('');
-
-  box.querySelectorAll(".qa-vote").forEach(b => {
-    b.addEventListener("click", function(){ qaUpvote(+this.dataset.r, this); });
-  });
-}
-
-function qaUpvote(row, btn){
-  if (qaVoted[row]) return;
-  qaVoted[row] = 1;
-  try { localStorage.setItem("qa_voted", JSON.stringify(qaVoted)); } catch(e){}
-  const n = btn.querySelector(".n");
-  n.textContent = (parseInt(n.textContent, 10) || 0) + 1;
-  btn.classList.add("done");
-  btn.querySelector(".c").textContent = "voted";
-  fetch(QA_API, { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" },
-                  body: JSON.stringify({ action:"upvote", row }) }).catch(()=>{});
-}
-
-async function qaSubmit(){
-  const btn = document.getElementById("qaSend");
-  const msg = document.getElementById("qaMsg");
-  const q = document.getElementById("qaQ").value.trim();
-  const sel = document.getElementById("qaSess");
-  const email = document.getElementById("qaEmail").value.trim();
-
-  msg.style.color = "var(--red)";
-  if (q.length < 8){ msg.textContent = "Please write your question in full."; return; }
-  if (sel && !sel.value){ msg.textContent = "Please choose the session."; return; }
-  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
-    msg.textContent = "That email does not look right."; return;
-  }
-  const nm = document.getElementById("qaName").value.trim();
-  if (qaCfg.raffle && qaCfg.raffleNeedsName && (email || nm) && !(email && nm)){
-    msg.textContent = "To enter the draw please give both your name and your email. " +
-                      "Leave both blank to ask anonymously.";
-    return;
-  }
-
-  btn.disabled = true; btn.textContent = "Sending…"; msg.textContent = "";
-  try{
-    const r = await fetch(QA_API, {
-      method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action:"askquestion", question:q,
-        session: sel ? sel.value : "",
-        name: nm,
-        institution: document.getElementById("qaInst").value.trim(),
-        email, website: document.getElementById("qaWeb").value
-      })
-    });
-    const d = await r.json();
-    btn.disabled = false; btn.textContent = "Send my question";
-    if (!d || !d.ok){ msg.textContent = (d && d.error) || "Could not send. Please try again."; return; }
-
-    if (d.moderated){
-      qaMine.push({ q, shown:false });
-      try { localStorage.setItem("qa_mine", JSON.stringify(qaMine.slice(-10))); } catch(e){}
-      qaRenderMine();
-    }
-    document.getElementById("qaQ").value = "";
-    document.getElementById("qaCount").textContent = "0 / 500";
-    msg.style.color = "var(--brand)";
-    msg.textContent = d.moderated
-      ? "Sent — it is with the chair now."
-      : "Sent — your question is showing below.";
-    if (qaCfg.raffle && email && (!qaCfg.raffleNeedsName || nm)) msg.textContent += " You are in the draw.";
-    qaPoll();
-  } catch(e){
-    btn.disabled = false; btn.textContent = "Send my question";
-    msg.textContent = "Could not reach the server. Check your connection.";
-  }
-}
-
 </script>
 </body>
 </html>

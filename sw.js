@@ -1,5 +1,5 @@
 /* APSON Bauchi 2026 — offline cache */
-const CACHE = "ap26-v26";
+const CACHE = "ap26-v27";
 const ASSETS = ["./", "index.html", "manifest.json", "apson-logo.png", "atbuth-logo.png", "bauchi.svg", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {
