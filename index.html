@@ -157,6 +157,7 @@
   .live-strip .go{margin-left:auto;background:#fff;color:var(--red);font-size:.72rem;font-weight:800;padding:4px 12px;border-radius:999px;white-space:nowrap}
   .dot{width:9px;height:9px;border-radius:50%;background:#fff;flex-shrink:0;animation:pulse 1.4s infinite}
   .tabs button .dot{display:inline-block;background:var(--red);margin-right:6px;vertical-align:1px}
+  .tabs button .dot.new{background:var(--brand-2);animation:none}
   @keyframes pulse{50%{opacity:.25}}
   @media (prefers-reduced-motion:reduce){.dot{animation:none}}
   .player{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;margin-bottom:8px}
@@ -299,6 +300,7 @@
 <nav class="tabs" id="tabs">
   <button data-p="home" class="on">Home</button>
   <button data-p="live">Live</button>
+  <button data-p="press">News</button>
   <button data-p="agenda">Programme</button>
   <button data-p="workshop">Workshop</button>
   <button data-p="addresses">Addresses</button>
@@ -308,7 +310,6 @@
   <button data-p="posters">Posters</button>
   <button data-p="info">Venue &amp; Info</button>
   <button data-p="yankari">Yankari</button>
-  <button data-p="press">News</button>
   <button data-p="sponsors">Sponsors</button>
   <button data-p="news">Announcements</button>
   <button data-p="delegates">Delegates</button>
@@ -1431,6 +1432,24 @@ function playVideo(el, src){
     : `<video controls autoplay playsinline preload="metadata" src="${esc(src)}"></video>`;
 }
 
+/* A story counts as seen once the delegate has opened the News tab while it was listed. */
+const newsKey = r => ((r.link || "") + "|" + (r.title || "")).trim();
+function newsSeen(){
+  try { return JSON.parse(localStorage.getItem("ap26-news-seen") || "[]"); } catch(e){ return []; }
+}
+function markNewsSeen(){
+  const keys = (DATA.News || []).filter(r => r.title).map(newsKey);
+  try { localStorage.setItem("ap26-news-seen", JSON.stringify(keys.slice(-60))); } catch(e){}
+  newsBadge();
+}
+function newsBadge(){
+  const btn = document.querySelector('.tabs button[data-p="press"]'); if(!btn) return;
+  const open = document.getElementById("p-press").classList.contains("on");
+  const seen = newsSeen();
+  const unseen = open ? 0 : (DATA.News || []).filter(r => r.title && !seen.includes(newsKey(r))).length;
+  btn.innerHTML = (unseen ? '<span class="dot new"></span>' : "") + "News";
+}
+
 function renderNews(){
   const rows = (DATA.News || []).filter(r => r.title);
   document.getElementById("pressList").innerHTML = rows.length ? rows.map(r => {
@@ -1448,6 +1467,7 @@ function renderNews(){
       ${r.link ? `<a class="read" ${linkAttrs(r.link)}>${esc(r.linktext || "Read the full story")}</a>` : ""}
     </div></div>`;
   }).join("") : `<p class="empty">Press coverage of the conference will appear here.</p>`;
+  if(document.getElementById("p-press").classList.contains("on")) markNewsSeen(); else newsBadge();
 }
 
 function renderSponsorPage(){
@@ -1571,6 +1591,7 @@ function showTab(name){
   document.querySelectorAll(".panel").forEach(p => p.classList.toggle("on", p.id === "p-"+name));
   b.scrollIntoView({block:"nearest", inline:"center"});
   if(name === "live" || liveEmbedShown.endsWith("|true")) renderLive();
+  if(name === "press") markNewsSeen(); else newsBadge();
   window.scrollTo({top: document.getElementById("tabs").offsetTop, behavior:"smooth"});
   return true;
 }
