@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" role="img" aria-label="Illustration of Yankari Game Reserve, Bauchi: elephants at the Wikki warm spring beneath rocky hills at sunrise">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbeac4"/>
+      <stop offset=".55" stop-color="#f8cf7e"/>
+      <stop offset="1" stop-color="#f2a654"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff6d8"/>
+      <stop offset=".45" stop-color="#ffe7a6" stop-opacity=".85"/>
+      <stop offset="1" stop-color="#ffe7a6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="plain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9a441"/>
+      <stop offset="1" stop-color="#b8862f"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9fd8cf"/>
+      <stop offset="1" stop-color="#4f9f98"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#27994e"/>
+      <stop offset="1" stop-color="#145c2c"/>
+    </linearGradient>
+    <g id="ele">
+      <ellipse cx="0" cy="-98" rx="96" ry="64"/>
+      <ellipse cx="-30" cy="-120" rx="60" ry="44"/>
+      <ellipse cx="-104" cy="-112" rx="44" ry="47"/>
+      <path d="M-128,-110 C-152,-82 -154,-44 -151,-14 C-150,-4 -141,-3 -139,-11 C-138,-42 -134,-74 -110,-96 Z"/>
+      <rect x="-66" y="-72" width="28" height="72" rx="10"/>
+      <rect x="-34" y="-72" width="28" height="70" rx="10"/>
+      <rect x="40" y="-72" width="28" height="70" rx="10"/>
+      <rect x="70" y="-72" width="28" height="72" rx="10"/>
+      <path d="M92,-120 C104,-104 104,-86 101,-66" fill="none" stroke-width="5" stroke-linecap="round"/>
+      <path d="M-84,-152 C-46,-164 -34,-112 -44,-80 C-52,-58 -78,-62 -90,-80 C-98,-96 -100,-136 -84,-152 Z" fill="#4e3a2c" stroke="none"/>
+      <path d="M-127,-84 C-146,-74 -152,-62 -152,-50 C-145,-58 -136,-68 -122,-76 Z" fill="#f3e6cc" stroke="none"/>
+      <circle cx="-116" cy="-122" r="3.4" fill="#f3e6cc" stroke="none"/>
+    </g>
+    <g id="acacia">
+      <path d="M-6,0 C-4,-40 -8,-70 -26,-96 L-18,-100 C-4,-80 0,-60 2,-44 C6,-66 16,-88 34,-104 L42,-98 C22,-78 10,-50 8,0 Z"/>
+      <ellipse cx="-30" cy="-104" rx="62" ry="15"/>
+      <ellipse cx="34" cy="-110" rx="70" ry="17"/>
+      <ellipse cx="4" cy="-120" rx="58" ry="15"/>
+    </g>
+  </defs>
+
+  <rect width="1200" height="500" fill="url(#sky)"/>
+  <circle cx="820" cy="290" r="190" fill="url(#glow)"/>
+  <circle cx="820" cy="290" r="78" fill="#fff4d2"/>
+
+  <g fill="none" stroke="#8a5530" stroke-width="3" stroke-linecap="round" opacity=".7">
+    <path d="M560,110 q10,-9 20,0 q10,-9 20,0"/>
+    <path d="M612,86 q7,-6 14,0 q7,-6 14,0"/>
+    <path d="M656,120 q6,-5 12,0 q6,-5 12,0"/>
+  </g>
+
+  <!-- far inselbergs -->
+  <path fill="#d49a73" d="M0,320 C40,300 70,262 112,258 C150,254 168,288 205,284 C240,280 250,236 300,230 C352,224 372,276 420,282 L470,300 C520,292 548,262 590,270 C630,278 640,300 690,300 L1200,300 L1200,340 L0,340 Z"/>
+  <g fill="#c8896a">
+    <ellipse cx="112" cy="262" rx="30" ry="18"/><ellipse cx="140" cy="270" rx="22" ry="14"/>
+    <ellipse cx="300" cy="234" rx="34" ry="20"/><ellipse cx="270" cy="250" rx="24" ry="15"/><ellipse cx="330" cy="250" rx="20" ry="13"/>
+    <ellipse cx="590" cy="272" rx="26" ry="14"/>
+  </g>
+  <path fill="#b4735a" d="M860,340 C900,300 930,268 980,262 C1030,256 1050,292 1090,288 C1130,284 1150,250 1200,246 L1200,350 L860,350 Z"/>
+  <g fill="#a3664f">
+    <ellipse cx="982" cy="266" rx="36" ry="20"/><ellipse cx="1016" cy="280" rx="24" ry="14"/><ellipse cx="1150" cy="256" rx="30" ry="16"/>
+  </g>
+
+  <!-- savannah plain -->
+  <path fill="url(#plain)" d="M0,332 C200,318 420,330 620,322 C820,314 1000,330 1200,322 L1200,500 L0,500 Z"/>
+
+  <!-- distant acacias -->
+  <g fill="#5a3b26">
+    <use href="#acacia" transform="translate(180,352) scale(.42)"/>
+    <use href="#acacia" transform="translate(560,344) scale(.3)"/>
+    <use href="#acacia" transform="translate(700,348) scale(.36)"/>
+    <use href="#acacia" transform="translate(1060,356) scale(.4)"/>
+  </g>
+
+  <!-- Wikki warm spring -->
+  <ellipse cx="520" cy="440" rx="300" ry="38" fill="url(#water)"/>
+  <ellipse cx="560" cy="432" rx="190" ry="12" fill="#c8ece6" opacity=".6"/>
+  <g fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".55">
+    <path d="M660,424 c-12,-18 12,-26 0,-46 c-10,-16 8,-24 2,-38"/>
+    <path d="M715,428 c-10,-16 10,-24 0,-40 c-8,-14 6,-20 2,-32"/>
+    <path d="M765,432 c-10,-16 10,-22 0,-38"/>
+  </g>
+
+  <!-- elephants -->
+  <g fill="#3a2a20" stroke="#3a2a20">
+    <use href="#ele" transform="translate(330,428) scale(.95)"/>
+    <use href="#ele" transform="translate(585,440) scale(.5)"/>
+    <use href="#ele" transform="translate(900,412) scale(-.62,.62)"/>
+  </g>
+
+  <!-- foreground acacia -->
+  <use href="#acacia" transform="translate(1090,470) scale(1.35)" fill="#2e2016"/>
+
+  <!-- ground -->
+  <path fill="url(#ground)" d="M0,462 C160,450 300,470 480,462 C680,452 860,472 1040,460 C1110,456 1160,458 1200,462 L1200,500 L0,500 Z"/>
+  <g stroke="#145c2c" stroke-width="4" stroke-linecap="round" fill="none">
+    <path d="M60,466 l-6,-22 M70,466 l2,-26 M80,466 l8,-20"/>
+    <path d="M740,468 l-6,-20 M750,468 l2,-24 M760,468 l8,-18"/>
+  </g>
+</svg>
